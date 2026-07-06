@@ -1,27 +1,16 @@
-<?php
-require_once __DIR__ . "/auth.php";
-require_login();
-$user = current_user();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PeraHP - Exchange</title>
+    <title>Exchange - PeraHP</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <aside class="sidebar" id="sidebar">
-        <a class="brand" href="main.php">
-            <span class="brand-mark">PHP</span>
-            <div>
-                <strong>PeraHP</strong>
-                <small>Digital wallet</small>
-            </div>
-        </a>
+        <a class="brand" href="main.php"><span class="brand-mark">PHP</span><div><strong>PeraHP</strong><small>Digital wallet</small></div></a>
         <nav class="nav-list">
-            <a class="nav-link" href="main.php">Home</a>
+            <a class="nav-link" href="main.php">Dashboard</a>
             <a class="nav-link" href="wallets.php">Wallets</a>
             <a class="nav-link" href="transactions.php">Transactions</a>
             <a class="nav-link active" href="exchange.php">Exchange</a>
@@ -29,84 +18,50 @@ $user = current_user();
             <a class="nav-link" href="settings.php">Settings</a>
         </nav>
         <div class="auth-box">
-            <a class="profile-link" href="profile.php" aria-label="Open profile">
-                <span class="status-dot"></span>
-                <div>
-                    <strong><?php echo e($user["name"]); ?></strong>
-                    <small><?php echo e($user["email"]); ?></small>
-                </div>
-            </a>
-            <a class="mini-button logout-link" href="logout.php" style="margin-left:auto;">Logout</a>
+            <span class="status-dot"></span>
+            <div><strong>Maria Santos</strong><small>maria@perahp.test</small></div>
+            <button class="mini-button" id="logoutButton" style="margin-left:auto;">Logout</button>
         </div>
     </aside>
 
     <div class="page">
         <header class="topbar">
-            <div>
-                <h1>Exchange</h1>
-                <small style="color:var(--muted);">Convert funds between wallet currencies</small>
-            </div>
-            <div class="top-actions">
-                <button class="icon-button" id="menuButton" aria-label="Open menu">
-                    <span></span><span></span><span></span>
-                </button>
-                <button class="ghost-button" id="printButton">Print</button>
-            </div>
+            <div><h1>Currency Exchange</h1><small style="color:var(--muted);">Convert funds between your wallets</small></div>
+            <button class="icon-button" id="menuButton"><span></span><span></span><span></span></button>
         </header>
 
-        <section class="overview-band">
-            <div class="overview-copy">
-                <p class="eyebrow">Currency Exchange</p>
-                <h2>Move money between wallets without leaving the Exchange page.</h2>
-                <p>The conversion form, current rates, and wallet balances are now grouped in their own workspace.</p>
-            </div>
-            <div class="readiness-card">
-                <h2 style="font-size:1.1rem;">Exchange readiness</h2>
-                <div class="progress-meter"><span style="width:92%;"></span></div>
-                <div class="readiness-list">
-                    <div><span>Available pairs</span><span>PHP, USD, EUR, JPY, SGD</span></div>
-                    <div><span>Validation</span><span>Amount and balance checks</span></div>
-                    <div><span>Rate source</span><span>Stored mock rates</span></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="grid two-columns">
-            <article class="panel" id="exchange">
-                <div class="panel-heading">
-                    <div><p class="eyebrow">Currency Exchange</p><h2>Convert between wallets</h2></div>
-                    <span class="badge neutral">Stored rates</span>
-                </div>
-                <form class="form-stack" id="exchangeForm">
-                    <div class="form-row">
-                        <label>Amount<input type="number" id="exchangeAmount" min="1" value="50"></label>
-                        <label>From<select id="exchangeFrom"></select></label>
-                        <label>To<select id="exchangeTo"></select></label>
-                    </div>
-                    <div class="conversion-preview">
-                        <span>Exchange preview</span>
-                        <strong id="exchangePreview">PHP 0.00</strong>
-                        <small>Mock rates are managed by admin in this static version.</small>
-                    </div>
-                    <button class="primary-button" type="submit">Exchange funds</button>
-                </form>
-            </article>
-
-            <article class="panel">
-                <div class="panel-heading">
-                    <div><p class="eyebrow">Balances</p><h2>Wallets available</h2></div>
-                    <span class="badge success">Live mock data</span>
-                </div>
-                <div class="wallet-grid compact-wallets" id="walletGrid"></div>
-            </article>
-        </section>
-
-        <section class="panel">
+        <section class="panel" id="exchange">
             <div class="panel-heading">
-                <div><p class="eyebrow">Exchange Rates</p><h2>Admin-managed conversion table</h2></div>
-                <span class="badge neutral">PHP reference</span>
+                <div><p class="eyebrow">Currency Exchange</p><h2>Convert between wallets</h2></div>
             </div>
-            <div class="rate-grid" id="rateGrid"></div>
+            
+            <form class="form-stack" id="exchangeForm">
+                <div class="form-row">
+                    <label>Amount <input type="number" id="exchangeAmount" min="1" placeholder="0.00"></label>
+                    <label>From <select id="exchangeFrom"></select></label>
+                    <label>To <select id="exchangeTo"></select></label>
+                </div>
+                
+                <div class="conversion-preview">
+                    <span>Exchange preview</span>
+                    <strong id="exchangePreview">PHP 0.00</strong>
+                    <small id="dynamicRateDisplay" style="display:block; margin-top:5px; color:var(--muted);">
+                        Select currencies to see the current rate
+                    </small>
+                </div>
+                
+                <button class="primary-button" type="submit">Exchange funds</button>
+            </form>
+
+            <div class="static-rates" style="margin-top: 40px; padding: 25px; border: 1px solid var(--line); border-radius: 8px; background: #fff;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 20px; color: var(--text);">Reference Exchange Rates</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div style="padding: 15px; background: #f3f4f6; border-radius: 8px; font-size: 1rem;"><strong>1 USD = PHP 58.50</strong></div>
+                    <div style="padding: 15px; background: #f3f4f6; border-radius: 8px; font-size: 1rem;"><strong>1 EUR = PHP 63.20</strong></div>
+                    <div style="padding: 15px; background: #f3f4f6; border-radius: 8px; font-size: 1rem;"><strong>1 JPY = PHP 0.39</strong></div>
+                    <div style="padding: 15px; background: #f3f4f6; border-radius: 8px; font-size: 1rem;"><strong>1 SGD = PHP 43.40</strong></div>
+                </div>
+            </div>
         </section>
     </div>
 
@@ -114,4 +69,3 @@ $user = current_user();
     <script src="script.js"></script>
 </body>
 </html>
-

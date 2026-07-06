@@ -31,464 +31,141 @@ const monthlyReport = [
     { month: "Jun", received: 74930, sent: 28440 }
 ];
 
-function byId(id) {
-    return document.getElementById(id);
-}
-
-function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, function (character) {
-        return {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            "\"": "&quot;",
-            "'": "&#039;"
-        }[character];
-    });
-}
-
-function money(amount, code) {
-    const numericAmount = Number(amount) || 0;
-    const formatted = numericAmount.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
-    return code + " " + formatted;
-}
-
-function phpValue(amount, code) {
-    return (Number(amount) || 0) * (ratesToPhp[code] || 1);
-}
-
-function convert(amount, from, to) {
-    return phpValue(amount, from) / (ratesToPhp[to] || 1);
-}
-
-function findWallet(code) {
-    return wallets.find(function (wallet) {
-        return wallet.code === code;
-    });
-}
-
-function setText(id, value) {
-    const element = byId(id);
-    if (element) {
-        element.textContent = value;
-    }
-}
-
-function statusClass(status) {
-    if (status === "completed") return "success";
-    if (status === "pending") return "warning";
-    if (status === "failed") return "danger";
-    return "neutral";
-}
-
-function statusLabel(status) {
-    return status.charAt(0).toUpperCase() + status.slice(1);
-}
-
-function todayLabel() {
-    return new Intl.DateTimeFormat("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-    }).format(new Date());
-}
-
-function referenceStamp() {
-    const now = new Date();
-    const year = String(now.getFullYear()).slice(-2);
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return year + month + day;
-}
-
-function createReference(prefix) {
-    const random = Math.random().toString(16).slice(2, 5).toUpperCase();
-    return prefix + "-" + referenceStamp() + "-" + random;
-}
+function byId(id) { return document.getElementById(id); }
+function escapeHtml(value) { return String(value).replace(/[&<>"']/g, function(c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]; }); }
+function money(amount, code) { return code + " " + (Number(amount) || 0).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function phpValue(amount, code) { return (Number(amount) || 0) * (ratesToPhp[code] || 1); }
+function convert(amount, from, to) { return phpValue(amount, from) / (ratesToPhp[to] || 1); }
+function findWallet(code) { return wallets.find(w => w.code === code); }
+function setText(id, value) { const el = byId(id); if (el) el.textContent = value; }
+function statusClass(s) { return s === "completed" ? "success" : s === "pending" ? "warning" : s === "failed" ? "danger" : "neutral"; }
+function statusLabel(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function todayLabel() { return new Intl.DateTimeFormat("en-US", {month:"short", day:"numeric", year:"numeric"}).format(new Date()); }
+function referenceStamp() { const now = new Date(); return String(now.getFullYear()).slice(-2) + String(now.getMonth()+1).padStart(2,"0") + String(now.getDate()).padStart(2,"0"); }
+function createReference(prefix) { return prefix + "-" + referenceStamp() + "-" + Math.random().toString(16).slice(2, 5).toUpperCase(); }
 
 function showToast(message) {
     const toast = byId("toast");
     if (!toast) return;
     toast.textContent = message;
     toast.classList.add("show");
-    window.setTimeout(function () {
-        toast.classList.remove("show");
-    }, 2200);
+    window.setTimeout(() => toast.classList.remove("show"), 2200);
 }
 
 function populateCurrencyOptions() {
     const selectIds = ["sendFrom", "sendTo", "requestCurrency", "exchangeFrom", "exchangeTo"];
-
-    selectIds.forEach(function (id) {
+    selectIds.forEach(id => {
         const select = byId(id);
         if (!select) return;
-        select.innerHTML = wallets.map(function (wallet) {
-            return "<option value=\"" + wallet.code + "\">" + wallet.code + " - " + wallet.name + "</option>";
-        }).join("");
+        select.innerHTML = wallets.map(w => `<option value="${w.code}">${w.code} - ${w.name}</option>`).join("");
     });
-
-    if (byId("sendFrom")) byId("sendFrom").value = "USD";
-    if (byId("sendTo")) byId("sendTo").value = "PHP";
-    if (byId("requestCurrency")) byId("requestCurrency").value = "PHP";
-    if (byId("exchangeFrom")) byId("exchangeFrom").value = "USD";
-    if (byId("exchangeTo")) byId("exchangeTo").value = "PHP";
 }
 
 function renderMetrics() {
-    const total = wallets.reduce(function (sum, wallet) {
-        return sum + phpValue(wallet.balance, wallet.code);
-    }, 0);
+    if (!byId("totalBalance")) return;
+    const total = wallets.reduce((sum, w) => sum + phpValue(w.balance, w.code), 0);
     const currentMonth = monthlyReport[monthlyReport.length - 1];
-    const pendingRequests = transactions.filter(function (item) {
-        return item.type === "Request" && item.status === "pending";
-    }).length;
-
     setText("totalBalance", money(total, "PHP"));
     setText("monthlyReceived", money(currentMonth.received, "PHP"));
     setText("monthlySent", money(currentMonth.sent, "PHP"));
-    setText("pendingCount", String(pendingRequests));
+    setText("pendingCount", String(transactions.filter(t => t.type === "Request" && t.status === "pending").length));
 }
 
 function renderWallets() {
-    const walletGrid = byId("walletGrid");
-    if (!walletGrid) return;
-
-    walletGrid.innerHTML = wallets.map(function (wallet) {
-        return "<div class=\"wallet-card\">" +
-            "<div class=\"wallet-top\"><span class=\"badge " + wallet.accent + "\">" + wallet.code + "</span><strong>" + money(wallet.balance, wallet.code) + "</strong></div>" +
-            "<small>" + escapeHtml(wallet.name) + " - 1 " + wallet.code + " = PHP " + ratesToPhp[wallet.code].toFixed(2) + "</small>" +
-            "<small>PHP value: " + money(phpValue(wallet.balance, wallet.code), "PHP") + "</small>" +
-            "</div>";
-    }).join("");
+    const grid = byId("walletGrid");
+    if (!grid) return;
+    grid.innerHTML = wallets.map(w => `<div class="wallet-card"><div class="wallet-top"><span class="badge ${w.accent}">${w.code}</span><strong>${money(w.balance, w.code)}</strong></div><small>${escapeHtml(w.name)} - 1 ${w.code} = PHP ${ratesToPhp[w.code].toFixed(2)}</small><small>PHP value: ${money(phpValue(w.balance, w.code), "PHP")}</small></div>`).join("");
 }
 
 function renderRates() {
-    const rateGrid = byId("rateGrid");
-    if (!rateGrid) return;
-
-    rateGrid.innerHTML = wallets.map(function (wallet) {
-        return "<article class=\"rate-card\"><span>" + wallet.code + "</span><strong>1 " + wallet.code + " = PHP " + ratesToPhp[wallet.code].toFixed(2) + "</strong><small>Used for wallet totals, transfers, exchanges, and reports.</small></article>";
-    }).join("");
+    const grid = byId("rateGrid");
+    if (!grid) return;
+    grid.innerHTML = wallets.map(w => `<article class="rate-card"><span>${w.code}</span><strong>1 ${w.code} = PHP ${ratesToPhp[w.code].toFixed(2)}</strong><small>Used for wallet totals, transfers, exchanges, and reports.</small></article>`).join("");
 }
 
 function renderActivity() {
-    const activityList = byId("activityList");
-    if (!activityList) return;
-
-    activityList.innerHTML = transactions.slice(0, 5).map(function (item) {
-        return "<div class=\"activity-row\">" +
-            "<div><strong>" + escapeHtml(item.type) + "</strong><small>" + escapeHtml(item.ref) + " - " + escapeHtml(item.user) + "</small></div>" +
-            "<div><strong class=\"activity-amount\">" + money(item.amount, item.currency) + "</strong><span class=\"badge " + statusClass(item.status) + "\">" + statusLabel(item.status) + "</span></div>" +
-            "</div>";
-    }).join("");
+    const list = byId("activityList");
+    if (!list) return;
+    list.innerHTML = transactions.slice(0, 5).map(t => `<div class="activity-row"><div><strong>${escapeHtml(t.type)}</strong><small>${escapeHtml(t.ref)} - ${escapeHtml(t.user)}</small></div><div><strong class="activity-amount">${money(t.amount, t.currency)}</strong><span class="badge ${statusClass(t.status)}">${statusLabel(t.status)}</span></div></div>`).join("");
 }
 
 function renderTransactions() {
     const table = byId("transactionTable");
-    const searchInput = byId("searchInput");
-    const statusFilter = byId("statusFilter");
     if (!table) return;
-
-    const search = searchInput ? searchInput.value.toLowerCase() : "";
-    const status = statusFilter ? statusFilter.value : "all";
-
-    const rows = transactions.filter(function (item) {
-        const amountText = money(item.amount, item.currency);
-        const haystack = (item.ref + " " + item.type + " " + item.user + " " + amountText + " " + item.status).toLowerCase();
-        const matchesSearch = haystack.includes(search);
-        const matchesStatus = status === "all" || item.status === status;
-        return matchesSearch && matchesStatus;
-    });
-
-    table.innerHTML = rows.map(function (item) {
-        return "<tr>" +
-            "<td><strong>" + escapeHtml(item.ref) + "</strong></td>" +
-            "<td>" + escapeHtml(item.type) + "</td>" +
-            "<td>" + escapeHtml(item.user) + "</td>" +
-            "<td>" + money(item.amount, item.currency) + "</td>" +
-            "<td><span class=\"badge " + statusClass(item.status) + "\">" + statusLabel(item.status) + "</span></td>" +
-            "<td>" + escapeHtml(item.date) + "</td>" +
-            "</tr>";
-    }).join("") || "<tr><td colspan=\"6\">No transactions found.</td></tr>";
+    const search = (byId("searchInput")?.value || "").toLowerCase();
+    const status = byId("statusFilter")?.value || "all";
+    const rows = transactions.filter(t => (t.ref + " " + t.type + " " + t.user + " " + money(t.amount, t.currency) + " " + t.status).toLowerCase().includes(search) && (status === "all" || t.status === status));
+    table.innerHTML = rows.map(t => `<tr><td><strong>${escapeHtml(t.ref)}</strong></td><td>${escapeHtml(t.type)}</td><td>${escapeHtml(t.user)}</td><td>${money(t.amount, t.currency)}</td><td><span class="badge ${statusClass(t.status)}">${statusLabel(t.status)}</span></td><td>${escapeHtml(t.date)}</td></tr>`).join("") || "<tr><td colspan=\"6\">No transactions found.</td></tr>";
 }
 
 function renderReport() {
     const chart = byId("reportChart");
     if (!chart) return;
-
-    const max = Math.max.apply(null, monthlyReport.map(function (item) {
-        return Math.max(item.received, item.sent);
-    }));
-
-    chart.innerHTML = monthlyReport.map(function (item) {
-        const receivedWidth = Math.max(3, (item.received / max) * 100);
-        const sentWidth = Math.max(3, (item.sent / max) * 100);
-        return "<div class=\"bar-row\">" +
-            "<strong>" + item.month + "</strong>" +
-            "<div class=\"bar-track\"><div class=\"bar in\" style=\"width:" + receivedWidth + "%\"></div><div class=\"bar out\" style=\"width:" + sentWidth + "%\"></div></div>" +
-            "<small>" + money(item.received, "PHP") + " in / " + money(item.sent, "PHP") + " out</small>" +
-            "</div>";
-    }).join("");
+    const max = Math.max(...monthlyReport.map(i => Math.max(i.received, i.sent)));
+    chart.innerHTML = monthlyReport.map(i => `<div class="bar-row"><strong>${i.month}</strong><div class="bar-track"><div class="bar in" style="width:${Math.max(3, (i.received/max)*100)}%"></div><div class="bar out" style="width:${Math.max(3, (i.sent/max)*100)}%"></div></div><small>${money(i.received, "PHP")} in / ${money(i.sent, "PHP")} out</small></div>`).join("");
 }
 
 function updateSendPreview() {
-    const amountElement = byId("sendAmount");
-    const fromElement = byId("sendFrom");
-    const toElement = byId("sendTo");
-    if (!amountElement || !fromElement || !toElement) return;
-
-    const amount = Number(amountElement.value) || 0;
-    const from = fromElement.value;
-    const to = toElement.value;
-    const converted = convert(amount, from, to);
-    const baseValue = phpValue(amount, from);
-
-    setText("sendPreview", money(converted, to));
-    setText("sendPhpValue", "PHP base value: " + money(baseValue, "PHP"));
+    if (!byId("sendAmount")) return;
+    const amount = Number(byId("sendAmount").value) || 0;
+    const converted = convert(amount, byId("sendFrom").value, byId("sendTo").value);
+    setText("sendPreview", money(converted, byId("sendTo").value));
+    setText("sendPhpValue", "PHP base value: " + money(phpValue(amount, byId("sendFrom").value), "PHP"));
 }
 
 function updateExchangePreview() {
-    const amountElement = byId("exchangeAmount");
-    const fromElement = byId("exchangeFrom");
-    const toElement = byId("exchangeTo");
-    if (!amountElement || !fromElement || !toElement) return;
-
-    const amount = Number(amountElement.value) || 0;
-    const from = fromElement.value;
-    const to = toElement.value;
-    setText("exchangePreview", money(convert(amount, from, to), to));
+    if (!byId("exchangeAmount")) return;
+    const amount = Number(byId("exchangeAmount").value) || 0;
+    setText("exchangePreview", money(convert(amount, byId("exchangeFrom").value, byId("exchangeTo").value), byId("exchangeTo").value));
 }
 
 function renderAll() {
-    renderMetrics();
-    renderWallets();
-    renderRates();
-    renderActivity();
-    renderTransactions();
-    renderReport();
+    renderMetrics(); renderWallets(); renderRates(); renderActivity(); renderTransactions(); renderReport();
 }
 
 function bindEvents() {
-    const menuButton = byId("menuButton");
-    const sidebar = byId("sidebar");
-    if (menuButton && sidebar) {
-        menuButton.addEventListener("click", function () {
-            sidebar.classList.toggle("open");
-        });
-    }
+    const menu = byId("menuButton"); const side = byId("sidebar");
+    if (menu && side) menu.addEventListener("click", () => side.classList.toggle("open"));
+    document.querySelectorAll(".nav-link").forEach(l => l.addEventListener("click", () => { document.querySelectorAll(".nav-link").forEach(i => i.classList.remove("active")); l.classList.add("active"); side?.classList.remove("open"); }));
+    document.querySelectorAll("[data-jump]").forEach(b => b.addEventListener("click", () => document.querySelector(b.dataset.jump)?.scrollIntoView({behavior:"smooth"})));
+    
+    ["sendAmount", "sendFrom", "sendTo"].forEach(id => byId(id)?.addEventListener("input", updateSendPreview));
+    ["exchangeAmount", "exchangeFrom", "exchangeTo"].forEach(id => byId(id)?.addEventListener("input", updateExchangePreview));
+    
+    byId("searchInput")?.addEventListener("input", renderTransactions);
+    byId("statusFilter")?.addEventListener("change", renderTransactions);
+    byId("printButton")?.addEventListener("click", () => window.print());
+    byId("logoutButton")?.addEventListener("click", () => showToast("Mock logout only."));
 
-    document.querySelectorAll(".nav-link").forEach(function (link) {
-        link.addEventListener("click", function () {
-            document.querySelectorAll(".nav-link").forEach(function (item) {
-                item.classList.remove("active");
-            });
-            link.classList.add("active");
-            if (sidebar) sidebar.classList.remove("open");
-        });
+    byId("sendForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const amt = Number(byId("sendAmount").value);
+        const from = byId("sendFrom").value;
+        const wallet = findWallet(from);
+        if (amt > 0 && wallet && wallet.balance >= amt) {
+            wallet.balance -= amt;
+            transactions.unshift({ref:createReference("SEND"), type:"Send", user:byId("recipientEmail")?.value || "Recipient", amount:amt, currency:from, status:"completed", date:todayLabel()});
+            renderAll(); showToast("Payment sent.");
+        } else showToast("Insufficient funds or invalid amount.");
     });
 
-    document.querySelectorAll("[data-jump]").forEach(function (button) {
-        button.addEventListener("click", function () {
-            const target = document.querySelector(button.dataset.jump);
-            if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
+    byId("requestForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const ref = createReference("REQ");
+        transactions.unshift({ref:ref, type:"Request", user:byId("payerEmail")?.value || "Payer", amount:Number(byId("requestAmount").value), currency:byId("requestCurrency").value, status:"pending", date:todayLabel()});
+        setText("referenceCode", ref); renderAll(); showToast("Reference generated.");
     });
 
-    ["sendAmount", "sendFrom", "sendTo"].forEach(function (id) {
-        const element = byId(id);
-        if (!element) return;
-        element.addEventListener("input", updateSendPreview);
-        element.addEventListener("change", updateSendPreview);
-    });
-
-    ["exchangeAmount", "exchangeFrom", "exchangeTo"].forEach(function (id) {
-        const element = byId(id);
-        if (!element) return;
-        element.addEventListener("input", updateExchangePreview);
-        element.addEventListener("change", updateExchangePreview);
-    });
-
-    const searchInput = byId("searchInput");
-    const statusFilter = byId("statusFilter");
-    if (searchInput) searchInput.addEventListener("input", renderTransactions);
-    if (statusFilter) statusFilter.addEventListener("change", renderTransactions);
-
-    const printButton = byId("printButton");
-    if (printButton) printButton.addEventListener("click", function () { window.print(); });
-
-    const sendForm = byId("sendForm");
-    if (sendForm) {
-        sendForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const amount = Number(byId("sendAmount").value) || 0;
-            const from = byId("sendFrom").value;
-            const wallet = findWallet(from);
-            const recipient = byId("recipientEmail") && byId("recipientEmail").value ? byId("recipientEmail").value : "Recipient";
-
-            if (amount <= 0) {
-                showToast("Enter an amount greater than zero.");
-                return;
-            }
-            if (!wallet || wallet.balance < amount) {
-                showToast("Insufficient wallet balance for this transfer.");
-                return;
-            }
-
-            wallet.balance -= amount;
-            transactions.unshift({
-                ref: createReference("SEND"),
-                type: "Send",
-                user: recipient,
-                amount: amount,
-                currency: from,
-                status: "completed",
-                date: todayLabel()
-            });
-            renderAll();
-            updateSendPreview();
-            showToast("Payment sent and added to transaction history.");
-        });
-    }
-
-    const requestForm = byId("requestForm");
-    if (requestForm) {
-        requestForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const amount = Number(byId("requestAmount").value) || 0;
-            const currency = byId("requestCurrency").value;
-            const payer = byId("payerEmail") && byId("payerEmail").value ? byId("payerEmail").value : "Payer";
-
-            if (amount <= 0) {
-                showToast("Enter a request amount greater than zero.");
-                return;
-            }
-
-            const reference = createReference("REQ");
-            transactions.unshift({
-                ref: reference,
-                type: "Request",
-                user: payer,
-                amount: amount,
-                currency: currency,
-                status: "pending",
-                date: todayLabel()
-            });
-            setText("referenceCode", reference);
-            setText("referenceStatus", "Status: Pending");
-            renderAll();
-            showToast("Payment request reference generated.");
-        });
-    }
-
-    const exchangeForm = byId("exchangeForm");
-    if (exchangeForm) {
-        exchangeForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const amount = Number(byId("exchangeAmount").value) || 0;
-            const from = byId("exchangeFrom").value;
-            const to = byId("exchangeTo").value;
-            const fromWallet = findWallet(from);
-            const toWallet = findWallet(to);
-
-            if (amount <= 0) {
-                showToast("Enter an exchange amount greater than zero.");
-                return;
-            }
-            if (from === to) {
-                showToast("Choose two different currencies for exchange.");
-                return;
-            }
-            if (!fromWallet || !toWallet || fromWallet.balance < amount) {
-                showToast("Insufficient wallet balance for this exchange.");
-                return;
-            }
-
-            const convertedAmount = convert(amount, from, to);
-            fromWallet.balance -= amount;
-            toWallet.balance += convertedAmount;
-            transactions.unshift({
-                ref: createReference("EXCH"),
-                type: "Exchange",
-                user: "Wallet exchange",
-                amount: amount,
-                currency: from,
-                status: "completed",
-                date: todayLabel()
-            });
-            renderAll();
-            updateExchangePreview();
-            updateSendPreview();
-            showToast("Currency exchange completed in the mock wallet.");
-        });
-    }
-
-    const profileForm = byId("profileForm");
-    if (profileForm) {
-        profileForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            showToast("Profile changes saved for this mock account.");
-        });
-    }
-
-    const settingsProfileForm = byId("settingsProfileForm");
-    if (settingsProfileForm) {
-        settingsProfileForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            showToast("Profile settings saved for this mock account.");
-        });
-    }
-
-    const settingsSecurityForm = byId("settingsSecurityForm");
-    if (settingsSecurityForm) {
-        settingsSecurityForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const newPassword = byId("newPassword") ? byId("newPassword").value : "";
-            const confirmPassword = byId("confirmPassword") ? byId("confirmPassword").value : "";
-
-            if (newPassword !== confirmPassword) {
-                showToast("New password and confirmation must match.");
-                return;
-            }
-
-            showToast("Security settings saved in this mock page.");
-        });
-    }
-
-    const settingsPreferenceForm = byId("settingsPreferenceForm");
-    if (settingsPreferenceForm) {
-        settingsPreferenceForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            const dailyLimit = Number(byId("dailyLimit") ? byId("dailyLimit").value : 0) || 0;
-            const transactionLimit = Number(byId("transactionLimit") ? byId("transactionLimit").value : 0) || 0;
-
-            if (transactionLimit > dailyLimit) {
-                showToast("Single transaction limit cannot exceed the daily limit.");
-                return;
-            }
-
-            showToast("Wallet preferences saved.");
-        });
-    }
-
-    const settingsNotificationForm = byId("settingsNotificationForm");
-    if (settingsNotificationForm) {
-        settingsNotificationForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            showToast("Notification settings saved.");
-        });
-    }
-
-    document.querySelectorAll("[data-settings-action]").forEach(function (button) {
-        button.addEventListener("click", function () {
-            const action = button.dataset.settingsAction;
-            if (action === "download") showToast("Data export request queued.");
-            if (action === "freeze") showToast("Wallet freeze review started.");
-            if (action === "close") showToast("Account closure review started.");
-            if (action === "report") showToast("Report view updated for this mock page.");
-        });
+    byId("exchangeForm")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const amt = Number(byId("exchangeAmount").value);
+        const from = byId("exchangeFrom").value, to = byId("exchangeTo").value;
+        const fW = findWallet(from), tW = findWallet(to);
+        if (amt > 0 && fW && tW && fW.balance >= amt && from !== to) {
+            fW.balance -= amt; tW.balance += convert(amt, from, to);
+            transactions.unshift({ref:createReference("EXCH"), type:"Exchange", user:"Wallet exchange", amount:amt, currency:from, status:"completed", date:todayLabel()});
+            renderAll(); showToast("Exchange complete.");
+        } else showToast("Invalid exchange.");
     });
 }
 
@@ -500,8 +177,4 @@ function initializeDashboard() {
     bindEvents();
 }
 
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeDashboard);
-} else {
-    initializeDashboard();
-}
+document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", initializeDashboard) : initializeDashboard();

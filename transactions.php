@@ -1,14 +1,9 @@
-<?php
-require_once __DIR__ . "/auth.php";
-require_login();
-$user = current_user();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PeraHP - Transactions</title>
+    <title>Transactions - PeraHP</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -21,7 +16,7 @@ $user = current_user();
             </div>
         </a>
         <nav class="nav-list">
-            <a class="nav-link" href="main.php">Home</a>
+            <a class="nav-link" href="main.php">Dashboard</a>
             <a class="nav-link" href="wallets.php">Wallets</a>
             <a class="nav-link active" href="transactions.php">Transactions</a>
             <a class="nav-link" href="exchange.php">Exchange</a>
@@ -29,14 +24,12 @@ $user = current_user();
             <a class="nav-link" href="settings.php">Settings</a>
         </nav>
         <div class="auth-box">
-            <a class="profile-link" href="profile.php" aria-label="Open profile">
-                <span class="status-dot"></span>
-                <div>
-                    <strong><?php echo e($user["name"]); ?></strong>
-                    <small><?php echo e($user["email"]); ?></small>
-                </div>
-            </a>
-            <a class="mini-button logout-link" href="logout.php" style="margin-left:auto;">Logout</a>
+            <span class="status-dot"></span>
+            <div>
+                <strong>Maria Santos</strong>
+                <small>maria@perahp.test</small>
+            </div>
+            <button class="mini-button" id="logoutButton" style="margin-left:auto;">Logout</button>
         </div>
     </aside>
 
@@ -44,103 +37,15 @@ $user = current_user();
         <header class="topbar">
             <div>
                 <h1>Transactions</h1>
-                <small style="color:var(--muted);">Send, request, and review account activity</small>
+                <small style="color:var(--muted);">View your complete ledger</small>
             </div>
             <div class="top-actions">
-                <button class="icon-button" id="menuButton" aria-label="Open menu">
+                <button class="icon-button" id="menuButton">
                     <span></span><span></span><span></span>
                 </button>
-                <button class="ghost-button" id="printButton">Print</button>
+                <button class="ghost-button" id="printButton">🖨 Print</button>
             </div>
         </header>
-
-        <section class="metric-grid">
-            <div class="metric-card main-metric">
-                <span>Received (Jun)</span>
-                <strong id="monthlyReceived">PHP 0.00</strong>
-                <small>Incoming transactions</small>
-            </div>
-            <div class="metric-card">
-                <span>Sent (Jun)</span>
-                <strong id="monthlySent">PHP 0.00</strong>
-                <small>Outgoing payments</small>
-            </div>
-            <div class="metric-card">
-                <span>Pending</span>
-                <strong id="pendingCount">0</strong>
-                <small>Requests awaiting action</small>
-            </div>
-            <div class="metric-card">
-                <span>Ledger Items</span>
-                <strong>5</strong>
-                <small>Mock records loaded</small>
-            </div>
-        </section>
-
-        <section class="grid two-columns">
-            <article class="panel" id="send-money">
-                <div class="panel-heading">
-                    <div><p class="eyebrow">Send Money</p><h2>Transfer with live conversion</h2></div>
-                    <span class="badge success">Validated flow</span>
-                </div>
-                <form class="form-stack" id="sendForm">
-                    <label>Recipient email<input type="email" id="recipientEmail" value="juan@perahp.test"></label>
-                    <div class="form-row">
-                        <label>Amount<input type="number" id="sendAmount" min="1" value="100"></label>
-                        <label>From<select id="sendFrom"></select></label>
-                        <label>To<select id="sendTo"></select></label>
-                    </div>
-                    <div class="conversion-preview">
-                        <span>Converted amount</span>
-                        <strong id="sendPreview">PHP 0.00</strong>
-                        <small id="sendPhpValue">PHP base value: PHP 0.00</small>
-                    </div>
-                    <button class="primary-button" type="submit">Send payment</button>
-                </form>
-            </article>
-
-            <article class="panel" id="requests">
-                <div class="panel-heading">
-                    <div><p class="eyebrow">Receive & Request</p><h2>Generate payment reference</h2></div>
-                    <span class="badge warning">Pending queue</span>
-                </div>
-                <form class="form-stack" id="requestForm">
-                    <div class="form-row two">
-                        <label>Amount<input type="number" id="requestAmount" min="1" value="2500"></label>
-                        <label>Currency<select id="requestCurrency"></select></label>
-                    </div>
-                    <label>Payer email<input type="email" id="payerEmail" value="client@example.com"></label>
-                    <button class="secondary-button" type="submit">Generate reference</button>
-                </form>
-                <div class="reference-box">
-                    <span>Latest reference</span>
-                    <strong id="referenceCode">REQ-260701-001</strong>
-                    <small id="referenceStatus">Status: Pending</small>
-                </div>
-            </article>
-        </section>
-
-        <section class="grid two-columns">
-            <article class="panel">
-                <div class="panel-heading">
-                    <div><p class="eyebrow">Activity</p><h2>Recent activity feed</h2></div>
-                    <span class="badge success">Live mock data</span>
-                </div>
-                <div class="activity-list" id="activityList"></div>
-            </article>
-
-            <article class="panel">
-                <div class="panel-heading">
-                    <div><p class="eyebrow">Review</p><h2>Transaction controls</h2></div>
-                    <span class="badge neutral">Front-end mock</span>
-                </div>
-                <div class="settings-list">
-                    <div><span>Default status filter</span><strong>All statuses</strong></div>
-                    <div><span>Export format</span><strong>CSV ready</strong></div>
-                    <div><span>Audit trail</span><strong>Prepared for backend logs</strong></div>
-                </div>
-            </article>
-        </section>
 
         <section class="panel" id="history">
             <div class="panel-heading">
@@ -157,8 +62,23 @@ $user = current_user();
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead><tr><th>Reference</th><th>Type</th><th>User</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
-                    <tbody id="transactionTable"></tbody>
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Type</th>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionTable">
+                        <tr><td>RCV-260701-214</td><td>Receive</td><td>Client Example</td><td>PHP 74,930.00</td><td><span class="badge success">Completed</span></td><td>Jul 1, 2026</td></tr>
+                        <tr><td>SEND-260630-A91</td><td>Send</td><td>Juan Dela Cruz</td><td>USD 100.00</td><td><span class="badge success">Completed</span></td><td>Jun 30, 2026</td></tr>
+                        <tr><td>REQ-260629-K02</td><td>Request</td><td>Client Example</td><td>PHP 2,500.00</td><td><span class="badge warning">Pending</span></td><td>Jun 29, 2026</td></tr>
+                        <tr><td>EXCH-260628-V19</td><td>Exchange</td><td>Maria Santos</td><td>EUR 50.00</td><td><span class="badge success">Completed</span></td><td>Jun 28, 2026</td></tr>
+                        <tr><td>SEND-260627-R77</td><td>Send</td><td>Online Store</td><td>SGD 40.00</td><td><span class="badge danger" style="background:#e74c3c;">Failed</span></td><td>Jun 27, 2026</td></tr>
+                    </tbody>
                 </table>
             </div>
         </section>

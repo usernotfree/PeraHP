@@ -1,15 +1,14 @@
-<?php
-require_once __DIR__ . "/auth.php";
-require_login();
-$user = current_user();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PeraHP - Wallets</title>
+    <title>Wallets - PeraHP</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Remove underlines from all links */
+        a { text-decoration: none; }
+    </style>
 </head>
 <body>
     <aside class="sidebar" id="sidebar">
@@ -21,7 +20,7 @@ $user = current_user();
             </div>
         </a>
         <nav class="nav-list">
-            <a class="nav-link" href="main.php">Home</a>
+            <a class="nav-link" href="main.php">Dashboard</a>
             <a class="nav-link active" href="wallets.php">Wallets</a>
             <a class="nav-link" href="transactions.php">Transactions</a>
             <a class="nav-link" href="exchange.php">Exchange</a>
@@ -29,72 +28,24 @@ $user = current_user();
             <a class="nav-link" href="settings.php">Settings</a>
         </nav>
         <div class="auth-box">
-            <a class="profile-link" href="profile.php" aria-label="Open profile">
-                <span class="status-dot"></span>
-                <div>
-                    <strong><?php echo e($user["name"]); ?></strong>
-                    <small><?php echo e($user["email"]); ?></small>
-                </div>
-            </a>
-            <a class="mini-button logout-link" href="logout.php" style="margin-left:auto;">Logout</a>
+            <span class="status-dot"></span>
+            <div>
+                <strong>Maria Santos</strong>
+                <small>maria@perahp.test</small>
+            </div>
+            <button class="mini-button" id="logoutButton" style="margin-left:auto;">Logout</button>
         </div>
     </aside>
 
     <div class="page">
         <header class="topbar">
             <div>
-                <h1>Wallets</h1>
-                <small style="color:var(--muted);">Manage balances across supported currencies</small>
-            </div>
-            <div class="top-actions">
-                <button class="icon-button" id="menuButton" aria-label="Open menu">
-                    <span></span><span></span><span></span>
-                </button>
-                <button class="ghost-button" id="printButton">Print</button>
+                <h1>Wallets & Transfers</h1>
+                <small style="color:var(--muted);">Manage your funds and initiate payments</small>
             </div>
         </header>
 
-        <section class="overview-band">
-            <div class="overview-copy">
-                <p class="eyebrow">Wallet Center</p>
-                <h2>Your balances are separated from the home page.</h2>
-                <p>Review each wallet, compare PHP base values, and check the conversion rates used by the transaction and exchange pages.</p>
-            </div>
-            <div class="readiness-card">
-                <h2 style="font-size:1.1rem;">Wallet status</h2>
-                <div class="progress-meter"><span style="width:100%;"></span></div>
-                <div class="readiness-list">
-                    <div><span>Active wallets</span><span>5</span></div>
-                    <div><span>Base currency</span><span>PHP</span></div>
-                    <div><span>Rate source</span><span>Stored mock rates</span></div>
-                </div>
-            </div>
-        </section>
-
-        <section class="metric-grid">
-            <div class="metric-card main-metric">
-                <span>Total Balance</span>
-                <strong id="totalBalance">PHP 0.00</strong>
-                <small>All wallets combined</small>
-            </div>
-            <div class="metric-card">
-                <span>Primary Wallet</span>
-                <strong>PHP</strong>
-                <small>Default settlement currency</small>
-            </div>
-            <div class="metric-card">
-                <span>Foreign Wallets</span>
-                <strong>4</strong>
-                <small>USD, EUR, JPY, SGD</small>
-            </div>
-            <div class="metric-card">
-                <span>Wallet Health</span>
-                <strong>Good</strong>
-                <small>No blocked balances</small>
-            </div>
-        </section>
-
-        <section class="panel">
+        <section class="panel" style="margin-bottom: 25px;">
             <div class="panel-heading">
                 <div><p class="eyebrow">Wallets</p><h2>Multi-currency balances</h2></div>
                 <span class="badge neutral">PHP base</span>
@@ -105,22 +56,57 @@ $user = current_user();
         <section class="grid two-columns">
             <article class="panel">
                 <div class="panel-heading">
-                    <div><p class="eyebrow">Exchange Rates</p><h2>Conversion table</h2></div>
-                    <span class="badge neutral">Reference</span>
+                    <div>
+                        <p class="eyebrow">Send Money</p>
+                        <h2>Transfer with live conversion</h2>
+                    </div>
+                    <span class="badge success">Validated Flow</span>
                 </div>
-                <div class="rate-grid compact-rates" id="rateGrid"></div>
+                <form id="sendForm" class="form-stack">
+                    <label>Recipient Email
+                        <input type="email" id="recipientEmail" placeholder="juan@perahp.test" required>
+                    </label>
+                    <label>Amount
+                        <input type="number" id="sendAmount" placeholder="100.00" step="0.01" required>
+                    </label>
+                    <div class="form-row two">
+                        <label>From <select id="sendFrom"></select></label>
+                        <label>To <select id="sendTo"></select></label>
+                    </div>
+                    <div class="conversion-preview">
+                        <span>Converted amount</span>
+                        <strong id="sendPreview">PHP 0.00</strong>
+                        <small id="sendPhpValue">PHP base value: PHP 0.00</small>
+                    </div>
+                    <button type="submit" class="primary-button">Send payment</button>
+                </form>
             </article>
 
             <article class="panel">
                 <div class="panel-heading">
-                    <div><p class="eyebrow">Wallet Actions</p><h2>Common tasks</h2></div>
-                    <span class="badge success">Ready</span>
+                    <div>
+                        <p class="eyebrow">Receive & Request</p>
+                        <h2>Generate payment reference</h2>
+                    </div>
+                    <span class="badge warning">Pending Queue</span>
                 </div>
-                <div class="settings-list">
-                    <div><span>Send from wallet</span><a class="mini-button" href="transactions.php#send-money">Open transfer</a></div>
-                    <div><span>Convert funds</span><a class="mini-button" href="exchange.php">Open exchange</a></div>
-                    <div><span>Review activity</span><a class="mini-button" href="transactions.php">Open ledger</a></div>
-                </div>
+                <form id="requestForm" class="form-stack">
+                    <label>Amount
+                        <input type="number" id="requestAmount" placeholder="2500" step="0.01" required>
+                    </label>
+                    <label>Currency
+                        <select id="requestCurrency"></select>
+                    </label>
+                    <label>Payer Email
+                        <input type="email" id="payerEmail" placeholder="client@example.com" required>
+                    </label>
+                    <button type="submit" class="secondary-button">Generate reference</button>
+                    <div class="reference-box" style="margin-top:20px;">
+                        <span>Latest reference</span>
+                        <strong id="referenceCode">-</strong>
+                        <small id="referenceStatus">Status: Waiting</small>
+                    </div>
+                </form>
             </article>
         </section>
     </div>
