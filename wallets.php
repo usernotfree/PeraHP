@@ -19,7 +19,7 @@
             </div>
         </a>
         <nav class="nav-list">
-            <a class="nav-link" href="main.php">Dashboard</a>
+            <a class="nav-link" href="main.php">Home</a>
             <a class="nav-link active" href="wallets.php">Wallets</a>
             <a class="nav-link" href="transactions.php">Transactions</a>
             <a class="nav-link" href="exchange.php">Exchange</a>
@@ -55,7 +55,7 @@
         <section class="overview-band">
             <div class="overview-copy">
                 <p class="eyebrow">Wallet Center</p>
-                <h2>Your balances are separated from the dashboard.</h2>
+                <h2>Your balances are separated from the home page.</h2>
                 <p>Review each wallet, compare PHP base values, and check the conversion rates used by the transaction and exchange pages.</p>
             </div>
             <div class="readiness-card">
@@ -127,3 +127,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+

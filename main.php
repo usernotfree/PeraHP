@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PeraHP - Dashboard</title>
+    <title>PeraHP - Home</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -19,7 +19,7 @@
             </div>
         </a>
         <nav class="nav-list">
-            <a class="nav-link active" href="main.php">Dashboard</a>
+            <a class="nav-link active" href="main.php">Home</a>
             <a class="nav-link" href="wallets.php">Wallets</a>
             <a class="nav-link" href="transactions.php">Transactions</a>
             <a class="nav-link" href="exchange.php">Exchange</a>
@@ -41,8 +41,8 @@
     <div class="page">
         <header class="topbar">
             <div>
-                <h1>Dashboard</h1>
-                <small style="color:var(--muted);">Welcome back, Maria</small>
+                <h1>Home</h1>
+                <small style="color:var(--muted);">Promos, wallet shortcuts, and account highlights</small>
             </div>
             <div class="top-actions">
                 <button class="icon-button" id="menuButton" aria-label="Open menu">
@@ -52,19 +52,31 @@
             </div>
         </header>
 
-        <section class="overview-band">
-            <div class="overview-copy">
-                <p class="eyebrow">Overview</p>
-                <h2>Your money at a glance</h2>
-                <p>Use the dashboard for quick status checks, then open each workspace from the sidebar for detailed wallet, transaction, exchange, and reporting tasks.</p>
+        <section class="home-hero">
+            <div class="home-hero-copy">
+                <p class="eyebrow">PeraHP Everyday</p>
+                <h2>Spend, save, and discover wallet deals from one home screen.</h2>
+                <p>Start with the promos and shortcuts that matter most. Currency exchange is still available when needed, but it no longer drives the main landing page.</p>
+                <div class="hero-actions">
+                    <a class="primary-button" href="transactions.php#send-money">Send money</a>
+                    <a class="secondary-button" href="wallets.php">View wallets</a>
+                </div>
             </div>
-            <div class="readiness-card">
-                <h2 style="font-size:1.1rem;">Account readiness</h2>
-                <div class="progress-meter"><span style="width:76%;"></span></div>
-                <div class="readiness-list">
-                    <div><span>Profile</span><span>Complete</span></div>
-                    <div><span>Wallets</span><span>5 active</span></div>
-                    <div><span>Verification</span><span>Pending</span></div>
+            <div class="hero-phone" aria-label="PeraHP wallet preview">
+                <div class="phone-status">
+                    <span>PeraHP</span>
+                    <strong>PHP 128,090.00</strong>
+                </div>
+                <div class="phone-card wallet-card-visual">
+                    <span>Payday Boost</span>
+                    <strong>15% bill rewards</strong>
+                    <small>Available until Jul 31</small>
+                </div>
+                <div class="phone-shortcuts">
+                    <span>Send</span>
+                    <span>Cash In</span>
+                    <span>Bills</span>
+                    <span>Card</span>
                 </div>
             </div>
         </section>
@@ -93,10 +105,33 @@
         </section>
 
         <section class="quick-actions">
-            <a class="action-tile" href="transactions.php#send-money">Send money</a>
-            <a class="action-tile" href="transactions.php#requests">Request payment</a>
-            <a class="action-tile" href="exchange.php">Exchange currency</a>
-            <a class="action-tile" href="transactions.php">View history</a>
+            <a class="action-tile" href="wallets.php"><span>Cash in</span><small>Add funds and review wallet balances.</small></a>
+            <a class="action-tile" href="transactions.php#send-money"><span>Send money</span><small>Transfer to another PeraHP user.</small></a>
+            <a class="action-tile" href="transactions.php#requests"><span>Request payment</span><small>Create a reference for collections.</small></a>
+            <a class="action-tile" href="reports.php"><span>Track spending</span><small>Review money movement and reports.</small></a>
+        </section>
+
+        <section class="promo-grid">
+            <article class="promo-card promo-card-featured">
+                <div>
+                    <p class="eyebrow">Featured Ad</p>
+                    <h2>Get more from every bill payment.</h2>
+                    <p>Earn wallet rewards when you settle utilities, subscriptions, and tuition from PeraHP.</p>
+                </div>
+                <a class="mini-button" href="transactions.php#send-money">Pay now</a>
+            </article>
+            <article class="promo-card promo-card-dark">
+                <p class="eyebrow">New Card</p>
+                <h2>Virtual card for online shopping.</h2>
+                <p>Keep a separate card balance for safer checkouts.</p>
+                <a class="mini-button" href="wallets.php">Set up card</a>
+            </article>
+            <article class="promo-card promo-card-light">
+                <p class="eyebrow">Savings</p>
+                <h2>Build a goal wallet.</h2>
+                <p>Separate travel, emergency, and school funds without mixing daily spend.</p>
+                <a class="mini-button" href="wallets.php">Create goal</a>
+            </article>
         </section>
 
         <section class="grid two-columns">
@@ -110,22 +145,49 @@
 
             <article class="panel">
                 <div class="panel-heading">
-                    <div><p class="eyebrow">Modules</p><h2>Open a workspace</h2></div>
-                    <span class="badge neutral">Separate pages</span>
+                    <div><p class="eyebrow">Explore</p><h2>More ways to use PeraHP</h2></div>
+                    <span class="badge neutral">Home shortcuts</span>
                 </div>
-                <div class="module-grid dashboard-modules">
-                    <a class="module-card" href="wallets.php"><span>Wallets</span><strong>Balances</strong><small>View multi-currency wallet totals.</small></a>
-                    <a class="module-card" href="transactions.php"><span>Transactions</span><strong>Ledger</strong><small>Send, request, search, and filter activity.</small></a>
-                    <a class="module-card" href="exchange.php"><span>Exchange</span><strong>Convert</strong><small>Move funds between wallet currencies.</small></a>
-                    <a class="module-card" href="reports.php"><span>Reports</span><strong>Summaries</strong><small>Review monthly money movement.</small></a>
+                <div class="module-grid home-modules">
+                    <a class="module-card" href="transactions.php#send-money"><span>Transfer</span><strong>Send money</strong><small>Move funds to contacts in a few taps.</small></a>
+                    <a class="module-card" href="wallets.php"><span>Wallet</span><strong>Cash in</strong><small>See balances and prepare top-ups.</small></a>
+                    <a class="module-card" href="transactions.php#requests"><span>Collect</span><strong>Request payment</strong><small>Generate references for incoming money.</small></a>
+                    <a class="module-card" href="reports.php"><span>Insights</span><strong>Spending report</strong><small>Understand monthly activity.</small></a>
                 </div>
             </article>
         </section>
 
+        <section class="deal-board">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Deals</p>
+                    <h2>Ads and promos</h2>
+                </div>
+                <span class="badge success">Updated today</span>
+            </div>
+            <div class="deals-grid">
+                <article class="deal-card">
+                    <span>Shopping</span>
+                    <strong>PHP 200 cashback</strong>
+                    <small>Use your PeraHP wallet for eligible online stores.</small>
+                </article>
+                <article class="deal-card">
+                    <span>Load</span>
+                    <strong>Bonus data bundle</strong>
+                    <small>Buy mobile load and get partner data rewards.</small>
+                </article>
+                <article class="deal-card">
+                    <span>Invite</span>
+                    <strong>Earn referral points</strong>
+                    <small>Share PeraHP with friends and collect wallet perks.</small>
+                </article>
+            </div>
+        </section>
+
         <section class="security-grid">
-            <article class="security-card"><span>Session</span><strong>Active state shown</strong><small>The current user and session state remain visible while working.</small></article>
-            <article class="security-card"><span>Roles</span><strong>User and admin split</strong><small>Administrative actions are grouped away from normal wallet tasks.</small></article>
-            <article class="security-card"><span>Audit</span><strong>Activity trail ready</strong><small>Login and transaction events have clear spaces for backend records.</small></article>
+            <article class="security-card"><span>Account</span><strong>Verified profile path</strong><small>Finish verification to raise limits and unlock more wallet options.</small></article>
+            <article class="security-card"><span>Safety</span><strong>Secure wallet habits</strong><small>Review login alerts and transaction limits in settings.</small></article>
+            <article class="security-card"><span>Support</span><strong>Help-ready records</strong><small>Recent activity and reports stay close when you need a reference.</small></article>
         </section>
     </div>
 

@@ -19,7 +19,7 @@
             </div>
         </a>
         <nav class="nav-list">
-            <a class="nav-link" href="main.php">Dashboard</a>
+            <a class="nav-link" href="main.php">Home</a>
             <a class="nav-link" href="wallets.php">Wallets</a>
             <a class="nav-link" href="transactions.php">Transactions</a>
             <a class="nav-link" href="exchange.php">Exchange</a>
