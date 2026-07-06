@@ -190,10 +190,10 @@ function renderTransactions() {
     const table = byId("transactionTable");
     const searchInput = byId("searchInput");
     const statusFilter = byId("statusFilter");
-    if (!table || !searchInput || !statusFilter) return;
+    if (!table) return;
 
-    const search = searchInput.value.toLowerCase();
-    const status = statusFilter.value;
+    const search = searchInput ? searchInput.value.toLowerCase() : "";
+    const status = statusFilter ? statusFilter.value : "all";
 
     const rows = transactions.filter(function (item) {
         const amountText = money(item.amount, item.currency);
@@ -436,9 +436,67 @@ function bindEvents() {
     if (profileForm) {
         profileForm.addEventListener("submit", function (event) {
             event.preventDefault();
-            showToast("Profile changes saved in this mock dashboard.");
+            showToast("Profile changes saved for this mock account.");
         });
     }
+
+    const settingsProfileForm = byId("settingsProfileForm");
+    if (settingsProfileForm) {
+        settingsProfileForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            showToast("Profile settings saved for this mock account.");
+        });
+    }
+
+    const settingsSecurityForm = byId("settingsSecurityForm");
+    if (settingsSecurityForm) {
+        settingsSecurityForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const newPassword = byId("newPassword") ? byId("newPassword").value : "";
+            const confirmPassword = byId("confirmPassword") ? byId("confirmPassword").value : "";
+
+            if (newPassword !== confirmPassword) {
+                showToast("New password and confirmation must match.");
+                return;
+            }
+
+            showToast("Security settings saved in this mock page.");
+        });
+    }
+
+    const settingsPreferenceForm = byId("settingsPreferenceForm");
+    if (settingsPreferenceForm) {
+        settingsPreferenceForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const dailyLimit = Number(byId("dailyLimit") ? byId("dailyLimit").value : 0) || 0;
+            const transactionLimit = Number(byId("transactionLimit") ? byId("transactionLimit").value : 0) || 0;
+
+            if (transactionLimit > dailyLimit) {
+                showToast("Single transaction limit cannot exceed the daily limit.");
+                return;
+            }
+
+            showToast("Wallet preferences saved.");
+        });
+    }
+
+    const settingsNotificationForm = byId("settingsNotificationForm");
+    if (settingsNotificationForm) {
+        settingsNotificationForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            showToast("Notification settings saved.");
+        });
+    }
+
+    document.querySelectorAll("[data-settings-action]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const action = button.dataset.settingsAction;
+            if (action === "download") showToast("Data export request queued.");
+            if (action === "freeze") showToast("Wallet freeze review started.");
+            if (action === "close") showToast("Account closure review started.");
+            if (action === "report") showToast("Report view updated for this mock page.");
+        });
+    });
 }
 
 function initializeDashboard() {
