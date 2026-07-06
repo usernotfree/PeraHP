@@ -1,5 +1,7 @@
 <?php
-
+require_once __DIR__ . "/auth.php";
+require_login();
+$user = current_user();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,11 +32,11 @@
             <a class="profile-link" href="profile.php" aria-label="Open profile">
                 <span class="status-dot"></span>
                 <div>
-                    <strong>Maria Santos</strong>
-                    <small>maria@perahp.test</small>
+                    <strong><?php echo e($user["name"]); ?></strong>
+                    <small><?php echo e($user["email"]); ?></small>
                 </div>
             </a>
-            <button class="mini-button" id="logoutButton" style="margin-left:auto;">Logout</button>
+            <a class="mini-button logout-link" href="logout.php" style="margin-left:auto;">Logout</a>
         </div>
     </aside>
 

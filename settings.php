@@ -1,16 +1,7 @@
 <?php
-$user = [
-    "name" => "Maria Santos",
-    "email" => "maria@perahp.test",
-    "phone" => "+63 917 100 2000",
-    "address" => "Makati City, Philippines",
-    "role" => "Wallet owner",
-    "status" => "Active"
-];
-
-function e($value) {
-    return htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-}
+require_once __DIR__ . "/auth.php";
+require_login();
+$user = current_user();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,7 +37,7 @@ function e($value) {
                     <small><?php echo e($user["email"]); ?></small>
                 </div>
             </a>
-            <button class="mini-button" id="logoutButton" style="margin-left:auto;">Logout</button>
+            <a class="mini-button logout-link" href="logout.php" style="margin-left:auto;">Logout</a>
         </div>
     </aside>
 

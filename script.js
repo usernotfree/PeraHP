@@ -319,13 +319,6 @@ function bindEvents() {
     const printButton = byId("printButton");
     if (printButton) printButton.addEventListener("click", function () { window.print(); });
 
-    const logoutButton = byId("logoutButton");
-    if (logoutButton) {
-        logoutButton.addEventListener("click", function () {
-            showToast("Mock logout only. Backend session will be added later.");
-        });
-    }
-
     const sendForm = byId("sendForm");
     if (sendForm) {
         sendForm.addEventListener("submit", function (event) {
