@@ -1,4 +1,8 @@
 <?php
+require_once __DIR__ . "/auth.php";
+require_login();
+$user = current_user();
+$userFirstName = explode(" ", trim($user["name"]))[0] ?: $user["name"];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,10 +37,10 @@
         <div class="auth-box">
             <span class="status-dot"></span>
             <div>
-                <strong>Maria Santos</strong>
-                <small>maria@perahp.test</small>
+                <strong><?php echo e($user["name"]); ?></strong>
+                <small><?php echo e($user["email"]); ?></small>
             </div>
-            <button class="mini-button" id="logoutButton" style="margin-left:auto;">Logout</button>
+            <a class="mini-button logout-link" href="logout.php" style="margin-left:auto;">Logout</a>
         </div>
     </aside>
 
@@ -44,7 +48,7 @@
         <header class="topbar">
             <div>
                 <h1>Dashboard</h1>
-                <small style="color:var(--muted);">Welcome back, Maria</small>
+                <small style="color:var(--muted);">Welcome back, <?php echo e($userFirstName); ?></small>
             </div>
             <div class="top-actions">
                 <button class="icon-button" id="menuButton">

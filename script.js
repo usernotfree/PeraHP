@@ -135,7 +135,9 @@ function bindEvents() {
     byId("searchInput")?.addEventListener("input", renderTransactions);
     byId("statusFilter")?.addEventListener("change", renderTransactions);
     byId("printButton")?.addEventListener("click", () => window.print());
-    byId("logoutButton")?.addEventListener("click", () => showToast("Mock logout only."));
+    byId("logoutButton")?.addEventListener("click", () => {
+        window.location.href = "logout.php";
+    });
 
     byId("sendForm")?.addEventListener("submit", (e) => {
         e.preventDefault();

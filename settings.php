@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . "/auth.php";
+require_login();
+$user = current_user();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,8 +24,8 @@
         </nav>
         <div class="auth-box">
             <span class="status-dot"></span>
-            <div><strong>Maria Santos</strong><small>maria@perahp.test</small></div>
-            <button class="mini-button" id="logoutButton" style="margin-left:auto;">Logout</button>
+            <div><strong><?php echo e($user["name"]); ?></strong><small><?php echo e($user["email"]); ?></small></div>
+            <a class="mini-button logout-link" href="logout.php" style="margin-left:auto;">Logout</a>
         </div>
     </aside>
 
@@ -33,11 +38,11 @@
             <form class="form-stack" id="profileForm">
                 <div class="panel-heading"><h2>Personal Information</h2></div>
                 <div class="form-row two">
-                    <label>Full name<input type="text" value="Maria Santos"></label>
-                    <label>Email<input type="email" value="maria@perahp.test"></label>
+                    <label>Full name<input type="text" value="<?php echo e($user["name"]); ?>"></label>
+                    <label>Email<input type="email" value="<?php echo e($user["email"]); ?>"></label>
                 </div>
                 <div class="form-row two">
-                    <label>Phone<input type="text" value="+63 917 100 2000"></label>
+                    <label>Phone<input type="text" value="<?php echo e($user["phone"]); ?>"></label>
                     <label>Date of Birth<input type="date"></label>
                 </div>
                 <label>Address<input type="text" placeholder="123 Street Name, City, Philippines"></label>

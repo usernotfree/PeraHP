@@ -185,11 +185,15 @@ a:focus-visible {
 .ghost-button,
 .mini-button,
 .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-height: 42px;
     border: 1px solid transparent;
     border-radius: var(--radius);
     padding: 10px 15px;
     font-weight: 900;
+    text-decoration: none;
 }
 
 .primary-button {
