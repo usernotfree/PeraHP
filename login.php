@@ -14,13 +14,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim((string) ($_POST["email"] ?? ""));
     $password = (string) ($_POST["password"] ?? "");
 
-    if (strcasecmp($email, PERAHP_LOGIN_EMAIL) === 0 && hash_equals(PERAHP_LOGIN_PASSWORD, $password)) {
-        login_user(PERAHP_LOGIN_EMAIL);
+    $authenticatedUser = authenticate_user($email, $password);
+
+    if ($authenticatedUser !== null) {
+        login_user($authenticatedUser);
         header("Location: " . $next);
         exit;
     }
 
-    $error = "Use the demo email and password shown below.";
+    $error = "Check your email and password, or create a new account.";
 }
 ?>
 <!DOCTYPE html>
@@ -45,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div class="auth-copy">
                 <p class="eyebrow">Secure Access</p>
                 <h1>Log in to your PeraHP wallet.</h1>
-                <p>Enter the demo account credentials to open the home dashboard, wallet tools, reports, and exchange page.</p>
+                <p>Use your registered account, or use the demo credentials while the database is being prepared.</p>
             </div>
 
             <?php if ($error !== ""): ?>
@@ -67,6 +69,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <span>Demo account</span>
                 <strong><?php echo e(PERAHP_LOGIN_EMAIL); ?></strong>
                 <small>Password: <?php echo e(PERAHP_LOGIN_PASSWORD); ?></small>
+            </div>
+
+            <div class="auth-links">
+                <span>Need an account?</span>
+                <a href="register.php?next=<?php echo urlencode($next); ?>">Create one</a>
             </div>
         </section>
 

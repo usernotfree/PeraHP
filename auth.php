@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/db.php";
+
 $sessionPath = __DIR__ . "/runtime/sessions";
 
 if (!is_dir($sessionPath)) {
@@ -22,6 +24,7 @@ function e($value) {
 
 function demo_user($email = PERAHP_LOGIN_EMAIL) {
     return [
+        "id" => null,
         "name" => "Maria Santos",
         "email" => $email,
         "phone" => "+63 917 100 2000",
@@ -32,6 +35,71 @@ function demo_user($email = PERAHP_LOGIN_EMAIL) {
     ];
 }
 
+function user_from_database_row($row) {
+    if (!$row) {
+        return demo_user();
+    }
+
+    $createdAt = strtotime((string) ($row["created_at"] ?? ""));
+
+    return [
+        "id" => (int) $row["id"],
+        "name" => $row["full_name"],
+        "email" => $row["email"],
+        "phone" => $row["phone"] ?: "",
+        "address" => $row["address"] ?: "",
+        "role" => ($row["role"] ?? "user") === "admin" ? "Administrator" : "Wallet owner",
+        "status" => ucfirst((string) ($row["status"] ?? "active")),
+        "member_since" => $createdAt ? date("F Y", $createdAt) : date("F Y")
+    ];
+}
+
+function find_user_by_email($email) {
+    $pdo = perahp_db();
+
+    if (!$pdo) {
+        return null;
+    }
+
+    try {
+        $statement = $pdo->prepare(
+            "SELECT id, full_name, email, password_hash, phone, address, role, status, created_at
+             FROM users
+             WHERE email = :email
+             LIMIT 1"
+        );
+        $statement->execute(["email" => $email]);
+        $user = $statement->fetch();
+
+        return $user ?: null;
+    } catch (Throwable $exception) {
+        error_log("PeraHP user lookup failed: " . $exception->getMessage());
+        return null;
+    }
+}
+
+function authenticate_user($email, $password) {
+    $databaseUser = find_user_by_email($email);
+
+    if ($databaseUser) {
+        if (!password_verify($password, $databaseUser["password_hash"])) {
+            return null;
+        }
+
+        if (($databaseUser["status"] ?? "active") !== "active") {
+            return null;
+        }
+
+        return user_from_database_row($databaseUser);
+    }
+
+    if (strcasecmp($email, PERAHP_LOGIN_EMAIL) === 0 && hash_equals(PERAHP_LOGIN_PASSWORD, $password)) {
+        return demo_user(PERAHP_LOGIN_EMAIL);
+    }
+
+    return null;
+}
+
 function is_logged_in() {
     return isset($_SESSION["perahp_user"]) && is_array($_SESSION["perahp_user"]);
 }
@@ -40,9 +108,9 @@ function current_user() {
     return is_logged_in() ? $_SESSION["perahp_user"] : demo_user();
 }
 
-function login_user($email) {
+function login_user($user) {
     session_regenerate_id(true);
-    $_SESSION["perahp_user"] = demo_user($email);
+    $_SESSION["perahp_user"] = is_array($user) ? $user : demo_user($user);
 }
 
 function logout_user() {
