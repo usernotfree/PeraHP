@@ -10,9 +10,9 @@ logout_user();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PeraHP - Logged Out</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260712-bg">
 </head>
-<body class="auth-page">
+<body class="auth-page" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.34)), url('moneybackground.jpg') center / cover no-repeat fixed !important;">
     <main class="auth-shell logout-shell">
         <section class="login-panel logout-panel">
             <a class="brand auth-brand" href="login.php">
