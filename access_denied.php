@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/auth.php";
+require_login();
 $user = current_user();
 ?>
 <!DOCTYPE html>
@@ -13,7 +15,7 @@ $user = current_user();
     <main class="auth-shell">
         <section class="login-panel">
             <a class="brand auth-brand" href="main.php">
-                <span class="brand-mark">PHP</span>
+                <img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo">
                 <div><strong>PeraHP</strong><small>Digital wallet</small></div>
             </a>
             <div class="auth-copy">
