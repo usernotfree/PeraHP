@@ -24,7 +24,7 @@ function perahp_amount_from_post($key) {
 }
 
 function perahp_unique_reference($pdo, $prefix, $table) {
-    $allowedTables = ["transactions", "payment_requests", "exchange_transactions"];
+    $allowedTables = ["transactions", "payment_requests", "exchange_transactions", "deposit_requests"];
 
     if (!in_array($table, $allowedTables, true)) {
         throw new RuntimeException("Invalid reference table.");
@@ -394,9 +394,7 @@ function perahp_handle_cash_in($user) {
 
     try {
         $wallet = perahp_ensure_active_wallet_for_update($pdo, $userId, $currency);
-        perahp_update_wallet_balance($pdo, $wallet["id"], (float) $wallet["balance"] + $amount);
-
-        $reference = perahp_unique_reference($pdo, "CASH", "transactions");
+        $reference = perahp_unique_reference($pdo, "DEP", "deposit_requests");
 
         $transactionId = perahp_insert_transaction($pdo, [
             "reference_code" => $reference,
@@ -407,18 +405,37 @@ function perahp_handle_cash_in($user) {
             "amount" => $amount,
             "currency_code" => $currency,
             "php_value" => $phpValue,
-            "status" => "completed",
-            "description" => "Instant cash in"
+            "status" => "pending",
+            "description" => "Deposit waiting for admin approval"
         ]);
 
-        perahp_insert_audit_log($pdo, $userId, "wallet.cash_in", "transactions", $transactionId, [
+        $deposit = $pdo->prepare(
+            "INSERT INTO deposit_requests
+                (reference_code, user_id, wallet_id, transaction_id, amount, currency_code, php_value, status, note)
+             VALUES
+                (:reference_code, :user_id, :wallet_id, :transaction_id, :amount, :currency_code, :php_value, 'pending', :note)"
+        );
+        $deposit->execute([
+            "reference_code" => $reference,
+            "user_id" => $userId,
+            "wallet_id" => $wallet["id"],
+            "transaction_id" => $transactionId,
+            "amount" => $amount,
+            "currency_code" => $currency,
+            "php_value" => $phpValue,
+            "note" => "Created from wallet cash-in form"
+        ]);
+        $depositId = (int) $pdo->lastInsertId();
+
+        perahp_insert_audit_log($pdo, $userId, "wallet.deposit_requested", "deposit_requests", $depositId, [
             "reference" => $reference,
+            "transaction_id" => $transactionId,
             "amount" => $amount,
             "currency" => $currency
         ]);
 
         $pdo->commit();
-        perahp_set_flash("success", "Cash in complete. Reference: {$reference}");
+        perahp_set_flash("success", "Deposit request submitted for admin approval. Reference: {$reference}");
     } catch (Throwable $exception) {
         if ($pdo->inTransaction()) {
             $pdo->rollBack();
