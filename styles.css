@@ -2,7 +2,6 @@
     --teal: #0e6b64;
     --teal-dark: #063f3b;
     --gold: #c68a1e;
-    --coral: #e2643b;
     --jade: #1f9d75;
     --red: #b23a2e;
     --blue: #315d8f;
@@ -48,7 +47,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 a:focus-visible {
-    outline: 3px solid rgba(226, 100, 59, 0.32);
+    outline: 3px solid rgb(0, 54, 29);
     outline-offset: 2px;
 }
 
@@ -177,8 +176,8 @@ a:focus-visible {
 
 .eyebrow {
     margin: 0;
-    color: var(--gold);
-    font-size: 0.75rem;
+    color: var(#ffd000);
+    font-size: 1.75rem;
     font-weight: 900;
     text-transform: uppercase;
 }
@@ -211,13 +210,13 @@ a:focus-visible {
 
 .primary-button {
     color: white;
-    background: var(--coral);
+    background: var(--jade);
 }
 
 .primary-button:hover {
     color: white;
-    background: #d94f39;
-    border-color: #d94f39;
+    background: #045f4d;
+    border-color: #0a6e4b;
 }
 
 .secondary-button {
