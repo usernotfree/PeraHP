@@ -96,7 +96,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     "phone" => $values["phone"],
                     "address" => $values["address"],
                     "role" => "Wallet owner",
-                    "role_key" => "user",
                     "status" => "Active",
                     "member_since" => date("F Y")
                 ];
