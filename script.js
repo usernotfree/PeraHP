@@ -16,7 +16,7 @@ let wallets = perahpPageData.wallets || [
     { code: "SGD", name: "Singapore Dollar", balance: 440, accent: "success" }
 ];
 
-let transactions = [
+let transactions = perahpPageData.transactions || [
     { ref: "RCV-260701-214", type: "Receive", user: "Client Example", amount: 74930, currency: "PHP", status: "completed", date: "Jul 1, 2026" },
     { ref: "SEND-260630-A91", type: "Send", user: "Juan Dela Cruz", amount: 100, currency: "USD", status: "completed", date: "Jun 30, 2026" },
     { ref: "REQ-260629-K02", type: "Request", user: "Client Example", amount: 2500, currency: "PHP", status: "pending", date: "Jun 29, 2026" },
@@ -24,7 +24,7 @@ let transactions = [
     { ref: "SEND-260627-R77", type: "Send", user: "Online Store", amount: 40, currency: "SGD", status: "failed", date: "Jun 27, 2026" }
 ];
 
-const monthlyReport = [
+const monthlyReport = perahpPageData.monthlyReport || [
     { month: "Jan", received: 42000, sent: 18000 },
     { month: "Feb", received: 51000, sent: 22000 },
     { month: "Mar", received: 47000, sent: 25000 },
@@ -68,11 +68,14 @@ function populateCurrencyOptions() {
 function renderMetrics() {
     if (!byId("totalBalance")) return;
     const total = wallets.reduce((sum, w) => sum + phpValue(w.balance, w.code), 0);
-    const currentMonth = monthlyReport[monthlyReport.length - 1];
+    const currentMonth = monthlyReport[monthlyReport.length - 1] || { received: 0, sent: 0 };
     setText("totalBalance", money(total, "PHP"));
     setText("monthlyReceived", money(currentMonth.received, "PHP"));
     setText("monthlySent", money(currentMonth.sent, "PHP"));
-    setText("pendingCount", String(transactions.filter(t => t.type === "Request" && t.status === "pending").length));
+    const pendingCount = Number.isFinite(Number(perahpPageData.pendingCount))
+        ? Number(perahpPageData.pendingCount)
+        : transactions.filter(t => t.type === "Request" && t.status === "pending").length;
+    setText("pendingCount", String(pendingCount));
 }
 
 function renderWallets() {
@@ -94,6 +97,10 @@ function renderRates() {
 function renderActivity() {
     const list = byId("activityList");
     if (!list) return;
+    if (!transactions.length) {
+        list.innerHTML = "<div class=\"activity-row\"><div><strong>No recent activity</strong><small>Transactions will appear here after money moves through the account.</small></div></div>";
+        return;
+    }
     list.innerHTML = transactions.slice(0, 5).map(t => `<div class="activity-row"><div><strong>${escapeHtml(t.type)}</strong><small>${escapeHtml(t.ref)} - ${escapeHtml(t.user)}</small></div><div><strong class="activity-amount">${money(t.amount, t.currency)}</strong><span class="badge ${statusClass(t.status)}">${statusLabel(t.status)}</span></div></div>`).join("");
 }
 
@@ -109,7 +116,7 @@ function renderTransactions() {
 function renderReport() {
     const chart = byId("reportChart");
     if (!chart) return;
-    const max = Math.max(...monthlyReport.map(i => Math.max(i.received, i.sent)));
+    const max = Math.max(1, ...monthlyReport.map(i => Math.max(i.received, i.sent)));
     chart.innerHTML = monthlyReport.map(i => `<div class="bar-row"><strong>${i.month}</strong><div class="bar-track"><div class="bar in" style="width:${Math.max(3, (i.received/max)*100)}%"></div><div class="bar out" style="width:${Math.max(3, (i.sent/max)*100)}%"></div></div><small>${money(i.received, "PHP")} in / ${money(i.sent, "PHP")} out</small></div>`).join("");
 }
 

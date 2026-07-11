@@ -1,10 +1,13 @@
 <?php
 require_once __DIR__ . "/auth.php";
 require_once __DIR__ . "/wallet_data.php";
+require_once __DIR__ . "/transaction_data.php";
 require_login();
 $user = current_user();
 $userFirstName = explode(" ", trim($user["name"]))[0] ?: $user["name"];
 $walletPageData = perahp_wallet_page_data($user);
+$transactionPageData = perahp_transaction_page_data($user);
+$pageData = array_merge($walletPageData, $transactionPageData);
 $walletCount = count($walletPageData["wallets"]);
 ?>
 <!DOCTYPE html>
@@ -85,12 +88,12 @@ $walletCount = count($walletPageData["wallets"]);
                 <small>All wallets combined</small>
             </div>
             <div class="metric-card">
-                <span>📈 Received (Jun)</span>
+                <span>Received (This month)</span>
                 <strong id="monthlyReceived">PHP 0.00</strong>
                 <small>This month</small>
             </div>
             <div class="metric-card">
-                <span>📤 Sent (Jun)</span>
+                <span>Sent (This month)</span>
                 <strong id="monthlySent">PHP 0.00</strong>
                 <small>This month</small>
             </div>
@@ -120,7 +123,7 @@ $walletCount = count($walletPageData["wallets"]);
             <article class="panel">
                 <div class="panel-heading">
                     <div><p class="eyebrow">Activity</p><h2>Recent activity feed</h2></div>
-                    <span class="badge success">Live mock data</span>
+                    <span class="badge success"><?php echo $transactionPageData["transactionSource"] === "database" ? "Database" : "Demo"; ?> data</span>
                 </div>
                 <div class="activity-list" id="activityList"></div>
             </article>
@@ -151,7 +154,7 @@ $walletCount = count($walletPageData["wallets"]);
 
     <div class="toast" id="toast">Action completed</div>
     <script>
-        window.PERAHP_DATA = <?php echo perahp_json($walletPageData); ?>;
+        window.PERAHP_DATA = <?php echo perahp_json($pageData); ?>;
     </script>
     <script src="script.js"></script>
 </body>
