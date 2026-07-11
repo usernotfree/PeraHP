@@ -23,10 +23,10 @@ $walletCount = count($walletPageData["wallets"]);
         }
     </style>
 </head>
-<body>
+<body class="main-page">
     <aside class="sidebar" id="sidebar">
         <a class="brand" href="main.php">
-            <span class="brand-mark">PHP</span>
+            <img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo">
             <div>
                 <strong>PeraHP</strong>
                 <small>Digital wallet</small>
@@ -144,8 +144,8 @@ $walletCount = count($walletPageData["wallets"]);
             </div>
             
             <div class="admin-list" style="margin-bottom: 25px; border-bottom: 1px solid var(--line); padding-bottom: 20px;">
-                <div><strong>Maria Santos</strong><span class="badge success">Active</span><button class="mini-button">Suspend</button><button class="mini-button">Reset</button></div>
-                <div><strong>Juan Dela Cruz</strong><span class="badge success">Active</span><button class="mini-button">Suspend</button><button class="mini-button">Reset</button></div>
+                <div class="admin-user-row"><strong>Maria Santos</strong><span class="badge success">Active</span><button class="mini-button">Suspend</button><button class="mini-button">Reset</button></div>
+                <div class="admin-user-row"><strong>Juan Dela Cruz</strong><span class="badge success">Active</span><button class="mini-button">Suspend</button><button class="mini-button">Reset</button></div>
                 <div><strong>Login audit</strong><small>Maria signed in from 127.0.0.1 at 8:45 PM</small></div>
             </div>
 
