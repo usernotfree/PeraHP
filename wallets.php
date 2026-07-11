@@ -29,7 +29,7 @@ $walletPageData = perahp_wallet_page_data($user);
 <body>
     <aside class="sidebar" id="sidebar">
         <a class="brand" href="main.php">
-            <span class="brand-mark">PHP</span>
+            <img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo">
             <div>
                 <strong>PeraHP</strong>
                 <small>Digital wallet</small>
@@ -83,9 +83,9 @@ $walletPageData = perahp_wallet_page_data($user);
                 <div class="panel-heading">
                     <div>
                         <p class="eyebrow">Cash In</p>
-                        <h2>Add funds instantly</h2>
+                        <h2>Request a deposit</h2>
                     </div>
-                    <span class="badge success">Deposit</span>
+                    <span class="badge warning">Admin review</span>
                 </div>
                 <form id="cashInForm" class="form-stack" method="post" action="wallets.php">
                     <input type="hidden" name="action" value="cash_in">
@@ -96,7 +96,7 @@ $walletPageData = perahp_wallet_page_data($user);
                     <label>Currency
                         <select id="cashInCurrency" name="cash_in_currency"></select>
                     </label>
-                    <button type="submit" class="primary-button">Cash in</button>
+                    <button type="submit" class="primary-button">Submit deposit</button>
                 </form>
             </article>
 
