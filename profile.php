@@ -26,7 +26,7 @@ $walletPageData = perahp_wallet_page_data($user);
 <body>
     <aside class="sidebar" id="sidebar">
         <a class="brand" href="main.php">
-            <span class="brand-mark">PHP</span>
+            <img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo">
             <div>
                 <strong>PeraHP</strong>
                 <small>Digital wallet</small>
