@@ -1,7 +1,30 @@
 <?php
-require_once __DIR__ . "/auth.php";
+require_once __DIR__ . "/transaction_data.php";
 require_login();
 $user = current_user();
+$transactionPageData = perahp_transaction_page_data($user);
+$monthlyReport = $transactionPageData["monthlyReport"];
+$transactions = $transactionPageData["transactions"];
+$totalInflow = array_reduce($monthlyReport, function($sum, $row) {
+    return $sum + (float) ($row["received"] ?? 0);
+}, 0);
+$totalOutflow = array_reduce($monthlyReport, function($sum, $row) {
+    return $sum + (float) ($row["sent"] ?? 0);
+}, 0);
+$netFlow = $totalInflow - $totalOutflow;
+
+function perahp_report_money($amount, $currency = "PHP") {
+    return $currency . " " . number_format((float) $amount, 2);
+}
+
+function perahp_report_status_class($status) {
+    return $status === "completed" ? "success" : ($status === "pending" ? "warning" : ($status === "failed" ? "danger" : "neutral"));
+}
+
+function perahp_report_status_label($status) {
+    $status = (string) $status;
+    return $status === "" ? "Unknown" : ucfirst($status);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,99 +65,131 @@ $user = current_user();
         <header class="topbar">
             <div>
                 <h1>Financial Reports</h1>
-                <small style="color:var(--muted);">Analytics, spending trends, and history</small>
+                <small style="color:var(--muted);">
+                    <?php echo $transactionPageData["transactionSource"] === "database" ? "Loaded from SQL transaction records" : "Showing demo report records"; ?>
+                </small>
             </div>
             <div class="top-actions">
-                <button class="ghost-button" onclick="window.print()">🖨 Print Report</button>
+                <button class="icon-button" id="menuButton" aria-label="Open menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <button class="ghost-button" id="printButton">Print Report</button>
             </div>
         </header>
 
         <section class="metric-grid">
-            <div class="metric-card"><span>Total Inflow</span><strong id="totalIn">PHP 74,930.00</strong></div>
-            <div class="metric-card"><span>Total Outflow</span><strong id="totalOut">PHP 5,800.00</strong></div>
-            <div class="metric-card"><span>Net Flow</span><strong id="netFlow">PHP 69,130.00</strong></div>
+            <div class="metric-card">
+                <span>Total Inflow</span>
+                <strong id="totalIn"><?php echo e(perahp_report_money($totalInflow)); ?></strong>
+                <small>Completed money received in the report period</small>
+            </div>
+            <div class="metric-card">
+                <span>Total Outflow</span>
+                <strong id="totalOut"><?php echo e(perahp_report_money($totalOutflow)); ?></strong>
+                <small>Completed money sent in the report period</small>
+            </div>
+            <div class="metric-card">
+                <span>Net Flow</span>
+                <strong id="netFlow"><?php echo e(perahp_report_money($netFlow)); ?></strong>
+                <small>Inflow minus outflow</small>
+            </div>
         </section>
 
         <article class="panel" style="margin-bottom:20px;">
-            <div class="panel-heading"><h2>Financial Trend</h2></div>
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">SQL Report</p>
+                    <h2>Financial trend</h2>
+                </div>
+                <span class="badge neutral">Last 6 months</span>
+            </div>
             <div style="height: 250px;">
-                <canvas id="reportChart"></canvas>
+                <canvas id="reportChartCanvas"></canvas>
             </div>
         </article>
 
         <article class="panel">
-            <div class="panel-heading"><h2>Transaction Ledger</h2></div>
-            <table style="width:100%; border-collapse:collapse; margin-top:10px;">
-                <thead>
-                    <tr style="text-align:left; color:var(--muted); font-size:0.85rem;">
-                        <th style="padding:10px;">Reference</th>
-                        <th style="padding:10px;">Type</th>
-                        <th style="padding:10px;">User</th>
-                        <th style="padding:10px;">Amount</th>
-                        <th style="padding:10px;">Status</th>
-                    </tr>
-                </thead>
-                <tbody id="reportTableBody">
-                    <tr style="border-top:1px solid var(--line);">
-                        <td style="padding:12px;">RCV-260701-214</td>
-                        <td style="padding:12px;">Receive</td>
-                        <td style="padding:12px;">Client Example</td>
-                        <td style="padding:12px;">PHP 74,930.00</td>
-                        <td style="padding:12px;"><span class="badge success">Completed</span></td>
-                    </tr>
-                    <tr style="border-top:1px solid var(--line);">
-                        <td style="padding:12px;">SEND-260630-A91</td>
-                        <td style="padding:12px;">Send</td>
-                        <td style="padding:12px;">Juan Dela Cruz</td>
-                        <td style="padding:12px;">USD 100.00</td>
-                        <td style="padding:12px;"><span class="badge success">Completed</span></td>
-                    </tr>
-                    <tr style="border-top:1px solid var(--line);">
-                        <td style="padding:12px;">REQ-260629-K02</td>
-                        <td style="padding:12px;">Request</td>
-                        <td style="padding:12px;">Client Example</td>
-                        <td style="padding:12px;">PHP 2,500.00</td>
-                        <td style="padding:12px;"><span class="badge warning">Pending</span></td>
-                    </tr>
-                    <tr style="border-top:1px solid var(--line);">
-                        <td style="padding:12px;">EXCH-260628-V19</td>
-                        <td style="padding:12px;">Exchange</td>
-                        <td style="padding:12px;">Maria Santos</td>
-                        <td style="padding:12px;">EUR 50.00</td>
-                        <td style="padding:12px;"><span class="badge success">Completed</span></td>
-                    </tr>
-                    <tr style="border-top:1px solid var(--line);">
-                        <td style="padding:12px;">SEND-260627-R77</td>
-                        <td style="padding:12px;">Send</td>
-                        <td style="padding:12px;">Online Store</td>
-                        <td style="padding:12px;">SGD 40.00</td>
-                        <td style="padding:12px;"><span class="badge danger" style="background:#e74c3c;">Failed</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">Ledger</p>
+                    <h2>Transaction report</h2>
+                </div>
+                <span class="badge success"><?php echo e(count($transactions)); ?> rows</span>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Type</th>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                        <?php if (count($transactions) === 0): ?>
+                            <tr><td colspan="6">No report transactions yet.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($transactions as $transaction): ?>
+                                <tr>
+                                    <td><strong><?php echo e($transaction["ref"]); ?></strong></td>
+                                    <td><?php echo e($transaction["type"]); ?></td>
+                                    <td><?php echo e($transaction["user"]); ?></td>
+                                    <td><?php echo e(perahp_report_money($transaction["amount"], $transaction["currency"])); ?></td>
+                                    <td><span class="badge <?php echo e(perahp_report_status_class($transaction["status"])); ?>"><?php echo e(perahp_report_status_label($transaction["status"])); ?></span></td>
+                                    <td><?php echo e($transaction["date"]); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </article>
     </div>
 
+    <div class="toast" id="toast">Action completed</div>
     <script>
-        const ctx = document.getElementById('reportChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Inflow',
-                    data: [12000, 19000, 3000, 5000, 20000, 74930],
-                    borderColor: '#2ecc71',
-                    tension: 0.3
-                }, {
-                    label: 'Outflow',
-                    data: [1000, 2000, 5000, 1000, 3000, 5800],
-                    borderColor: '#e74c3c',
-                    tension: 0.3
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
+        window.PERAHP_DATA = <?php echo perahp_json($transactionPageData); ?>;
+        const reportData = {
+            labels: <?php echo perahp_json(array_column($monthlyReport, "month")); ?>,
+            inflow: <?php echo perahp_json(array_map(function($row) { return (float) ($row["received"] ?? 0); }, $monthlyReport)); ?>,
+            outflow: <?php echo perahp_json(array_map(function($row) { return (float) ($row["sent"] ?? 0); }, $monthlyReport)); ?>
+        };
+        const reportCanvas = document.getElementById("reportChartCanvas");
+
+        if (reportCanvas && window.Chart) {
+            new Chart(reportCanvas.getContext("2d"), {
+                type: "line",
+                data: {
+                    labels: reportData.labels,
+                    datasets: [{
+                        label: "Inflow",
+                        data: reportData.inflow,
+                        borderColor: "#2ecc71",
+                        backgroundColor: "rgba(46, 204, 113, 0.12)",
+                        tension: 0.3
+                    }, {
+                        label: "Outflow",
+                        data: reportData.outflow,
+                        borderColor: "#e74c3c",
+                        backgroundColor: "rgba(231, 76, 60, 0.12)",
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { boxWidth: 12 } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
     </script>
     <script src="script.js"></script>
 </body>
