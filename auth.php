@@ -48,6 +48,7 @@ function demo_user($email = PERAHP_LOGIN_EMAIL) {
         "phone" => "+63 917 100 2000",
         "address" => "Makati City, Philippines",
         "role" => "Wallet owner",
+        "role_key" => "demo",
         "status" => "Active",
         "member_since" => "January 2026"
     ];
@@ -67,6 +68,7 @@ function user_from_database_row($row) {
         "phone" => $row["phone"] ?: "",
         "address" => $row["address"] ?: "",
         "role" => ($row["role"] ?? "user") === "admin" ? "Administrator" : "Wallet owner",
+        "role_key" => $row["role"] ?? "user",
         "status" => ucfirst((string) ($row["status"] ?? "active")),
         "member_since" => $createdAt ? date("F Y", $createdAt) : date("F Y")
     ];
@@ -126,6 +128,11 @@ function current_user() {
     return is_logged_in() ? $_SESSION["perahp_user"] : demo_user();
 }
 
+function is_admin($user = null) {
+    $user = $user ?: current_user();
+    return ($user["role_key"] ?? "") === "admin" || ($user["role"] ?? "") === "Administrator";
+}
+
 function login_user($user) {
     session_regenerate_id(true);
     $_SESSION["perahp_user"] = is_array($user) ? $user : demo_user($user);
@@ -159,6 +166,18 @@ function require_login() {
 
     $next = basename($_SERVER["REQUEST_URI"] ?? "main.php");
     header("Location: login.php?next=" . urlencode($next));
+    exit;
+}
+
+function require_admin() {
+    require_login();
+
+    if (is_admin()) {
+        return;
+    }
+
+    http_response_code(403);
+    require __DIR__ . "/access_denied.php";
     exit;
 }
 ?>

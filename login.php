@@ -75,6 +75,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <span>Need an account?</span>
                 <a href="register.php?next=<?php echo urlencode($next); ?>">Create one</a>
             </div>
+
+            <div class="auth-links">
+                <span>Setting up admin?</span>
+                <a href="admin_setup.php">Create first admin</a>
+            </div>
         </section>
 
         <section class="auth-showcase" aria-label="PeraHP account preview">
@@ -82,8 +87,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <h2>Promos first, money tools when you need them.</h2>
             <div class="auth-preview-card">
                 <span>Available balance</span>
-                <strong>PHP 128,090.00</strong>
-                <small>Cash in, send, request, and track spending after sign in.</small>
+                <strong>SQL backed</strong>
+                <small>Registered accounts show real wallet, transaction, and report records after sign in.</small>
             </div>
         </section>
     </main>

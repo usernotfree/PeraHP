@@ -893,6 +893,36 @@ th {
     text-transform: uppercase;
 }
 
+.mini-button.active-filter,
+.mini-button.approve-button {
+    color: #0f684c;
+    background: #dff5eb;
+    border-color: #bfe8d5;
+}
+
+.mini-button.reject-button {
+    color: #87291f;
+    background: #fff1ef;
+    border-color: #f1b7ad;
+}
+
+.admin-actions,
+.request-actions,
+.reject-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.reject-form input {
+    min-height: 32px;
+    max-width: 180px;
+    padding: 7px 9px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+
 .mini-button {
     min-height: 32px;
     padding: 7px 9px;

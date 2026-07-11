@@ -38,10 +38,14 @@ $walletPageData = perahp_wallet_page_data($user);
         <nav class="nav-list">
             <a class="nav-link" href="main.php">Dashboard</a>
             <a class="nav-link active" href="wallets.php">Wallets</a>
+            <a class="nav-link" href="payment_requests.php">Payment Requests</a>
             <a class="nav-link" href="transactions.php">Transactions</a>
             <a class="nav-link" href="exchange.php">Exchange</a>
             <a class="nav-link" href="reports.php">Reports</a>
             <a class="nav-link" href="settings.php">Settings</a>
+            <?php if (is_admin()): ?>
+                <a class="nav-link" href="admin_deposits.php">Admin Deposits</a>
+            <?php endif; ?>
         </nav>
         <div class="auth-box">
             <a class="profile-link" href="profile.php" aria-label="Open profile">
@@ -83,20 +87,27 @@ $walletPageData = perahp_wallet_page_data($user);
                 <div class="panel-heading">
                     <div>
                         <p class="eyebrow">Cash In</p>
-                        <h2>Add funds instantly</h2>
+                        <h2>Request deposit approval</h2>
                     </div>
-                    <span class="badge success">Deposit</span>
+                    <span class="badge warning">Admin Review</span>
                 </div>
                 <form id="cashInForm" class="form-stack" method="post" action="wallets.php">
                     <input type="hidden" name="action" value="cash_in">
                     <?php echo csrf_input(); ?>
+                    <small style="color:var(--muted);">Your balance changes only after an admin approves this request.</small>
                     <label>Amount
                         <input type="number" id="cashInAmount" name="amount" placeholder="1000.00" min="0.01" step="0.01" required>
                     </label>
                     <label>Currency
                         <select id="cashInCurrency" name="cash_in_currency"></select>
                     </label>
-                    <button type="submit" class="primary-button">Cash in</button>
+                    <label>Payment reference
+                        <input type="text" name="proof_reference" placeholder="Bank slip, GCash ref, or receipt number">
+                    </label>
+                    <label>Note
+                        <input type="text" name="deposit_note" placeholder="Optional note for the admin">
+                    </label>
+                    <button type="submit" class="primary-button">Submit deposit request</button>
                 </form>
             </article>
 

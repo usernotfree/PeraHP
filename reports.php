@@ -47,10 +47,14 @@ function perahp_report_status_label($status) {
         <nav class="nav-list">
             <a class="nav-link" href="main.php">Dashboard</a>
             <a class="nav-link" href="wallets.php">Wallets</a>
+            <a class="nav-link" href="payment_requests.php">Payment Requests</a>
             <a class="nav-link" href="transactions.php">Transactions</a>
             <a class="nav-link" href="exchange.php">Exchange</a>
             <a class="nav-link active" href="reports.php">Reports</a>
             <a class="nav-link" href="settings.php">Settings</a>
+            <?php if (is_admin()): ?>
+                <a class="nav-link" href="admin_deposits.php">Admin Deposits</a>
+            <?php endif; ?>
         </nav>
         <div class="auth-box">
             <a class="profile-link" href="profile.php" aria-label="Open profile">
