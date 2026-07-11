@@ -13,6 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 $flash = perahp_account_take_flash();
 $user = current_user();
 $initials = strtoupper(substr(trim($user["name"]), 0, 1));
+$walletPageData = perahp_wallet_page_data($user);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -172,6 +173,9 @@ $initials = strtoupper(substr(trim($user["name"]), 0, 1));
     </div>
 
     <div class="toast" id="toast">Action completed</div>
+    <script>
+        window.PERAHP_DATA = <?php echo perahp_json($walletPageData); ?>;
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
