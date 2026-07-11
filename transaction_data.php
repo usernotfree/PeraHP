@@ -182,7 +182,7 @@ function perahp_user_monthly_report($userId) {
     return array_values($report);
 }
 
-function perahp_pending_request_count($userId, $email = "") {
+function perahp_pending_request_count($userId) {
     if (!$userId) {
         return 1;
     }
@@ -197,15 +197,12 @@ function perahp_pending_request_count($userId, $email = "") {
         $statement = $pdo->prepare(
             "SELECT COUNT(*) AS pending_count
              FROM payment_requests
-             WHERE (requester_user_id = :requester_id
-                    OR payer_user_id = :payer_id
-                    OR LOWER(payer_email) = LOWER(:payer_email))
+             WHERE (requester_user_id = :requester_id OR payer_user_id = :payer_id)
                AND status = 'pending'"
         );
         $statement->execute([
             "requester_id" => $userId,
-            "payer_id" => $userId,
-            "payer_email" => $email
+            "payer_id" => $userId
         ]);
 
         return (int) ($statement->fetch()["pending_count"] ?? 0);
@@ -230,7 +227,7 @@ function perahp_transaction_page_data($user) {
     return [
         "transactions" => perahp_user_transactions($userId),
         "monthlyReport" => perahp_user_monthly_report($userId),
-        "pendingCount" => perahp_pending_request_count($userId, $user["email"] ?? ""),
+        "pendingCount" => perahp_pending_request_count($userId),
         "transactionSource" => "database"
     ];
 }
