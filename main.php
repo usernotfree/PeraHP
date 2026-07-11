@@ -35,13 +35,12 @@ $walletCount = count($walletPageData["wallets"]);
         <nav class="nav-list">
             <a class="nav-link active" href="main.php">Dashboard</a>
             <a class="nav-link" href="wallets.php">Wallets</a>
-            <a class="nav-link" href="payment_requests.php">Payment Requests</a>
             <a class="nav-link" href="transactions.php">Transactions</a>
             <a class="nav-link" href="exchange.php">Exchange</a>
             <a class="nav-link" href="reports.php">Reports</a>
             <a class="nav-link" href="settings.php">Settings</a>
-            <?php if (is_admin()): ?>
-                <a class="nav-link" href="admin_deposits.php">Admin Deposits</a>
+            <?php if (is_admin_user($user)): ?>
+                <a class="nav-link" href="admin.php">Admin</a>
             <?php endif; ?>
         </nav>
         <div class="auth-box">
@@ -112,7 +111,7 @@ $walletCount = count($walletPageData["wallets"]);
 
         <section class="quick-actions">
             <a href="wallets.php" class="action-tile">💸 Send Money</a>
-            <a href="payment_requests.php" class="action-tile">📩 Payment Requests</a>
+            <a href="wallets.php" class="action-tile">📩 Request Payment</a>
             <a href="exchange.php" class="action-tile">🔄 Exchange Currency</a>
             <a href="transactions.php" class="action-tile">📋 View Transactions</a>
         </section>
@@ -135,19 +134,19 @@ $walletCount = count($walletPageData["wallets"]);
             </article>
         </section>
 
-        <?php if (is_admin()): ?>
         <article class="panel">
             <div class="panel-heading">
                 <div>
                     <p class="eyebrow">Admin</p>
-                    <h2>Admin controls</h2>
+                    <h2>User management and audit log</h2>
                 </div>
-                <span class="badge warning">Role protected</span>
+                <span class="badge warning">Role gated</span>
             </div>
-
+            
             <div class="admin-list" style="margin-bottom: 25px; border-bottom: 1px solid var(--line); padding-bottom: 20px;">
-                <div><strong>Deposit approvals</strong><small>Review pending cash-in requests before balances change.</small><a class="mini-button" href="admin_deposits.php">Open queue</a></div>
-                <div><strong>Audit trail</strong><small>Deposit approvals and rejections are saved to audit logs.</small></div>
+                <div><strong>Maria Santos</strong><span class="badge success">Active</span><button class="mini-button">Suspend</button><button class="mini-button">Reset</button></div>
+                <div><strong>Juan Dela Cruz</strong><span class="badge success">Active</span><button class="mini-button">Suspend</button><button class="mini-button">Reset</button></div>
+                <div><strong>Login audit</strong><small>Maria signed in from 127.0.0.1 at 8:45 PM</small></div>
             </div>
 
             <section class="security-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
@@ -155,8 +154,12 @@ $walletCount = count($walletPageData["wallets"]);
                 <article class="security-card"><span>Roles</span><strong>User and admin split</strong><small>Administrative actions are grouped away from normal wallet tasks.</small></article>
                 <article class="security-card"><span>Audit</span><strong>Activity trail ready</strong><small>Login and transaction events have clear spaces for backend records.</small></article>
             </section>
+            <?php if (is_admin_user($user)): ?>
+                <div style="margin-top:18px;">
+                    <a class="primary-button" href="admin.php">Open admin dashboard</a>
+                </div>
+            <?php endif; ?>
         </article>
-        <?php endif; ?>
     </div>
 
     <div class="toast" id="toast">Action completed</div>
