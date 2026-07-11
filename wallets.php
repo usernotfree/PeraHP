@@ -1,8 +1,17 @@
 <?php
 require_once __DIR__ . "/auth.php";
 require_once __DIR__ . "/wallet_data.php";
+require_once __DIR__ . "/wallet_actions.php";
 require_login();
 $user = current_user();
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    perahp_handle_wallet_post($user, ["send_money", "request_payment", "cash_in"]);
+    header("Location: wallets.php");
+    exit;
+}
+
+$flash = perahp_take_flash();
 $walletPageData = perahp_wallet_page_data($user);
 ?>
 <!DOCTYPE html>
@@ -52,6 +61,10 @@ $walletPageData = perahp_wallet_page_data($user);
             </div>
         </header>
 
+        <?php if ($flash): ?>
+            <div class="action-alert <?php echo e($flash["type"] ?? ""); ?>"><?php echo e($flash["message"] ?? ""); ?></div>
+        <?php endif; ?>
+
         <section class="panel" style="margin-bottom: 25px;">
             <div class="panel-heading">
                 <div><p class="eyebrow">Wallets</p><h2>Multi-currency balances</h2></div>
@@ -67,21 +80,44 @@ $walletPageData = perahp_wallet_page_data($user);
             <article class="panel">
                 <div class="panel-heading">
                     <div>
+                        <p class="eyebrow">Cash In</p>
+                        <h2>Add funds instantly</h2>
+                    </div>
+                    <span class="badge success">Deposit</span>
+                </div>
+                <form id="cashInForm" class="form-stack" method="post" action="wallets.php">
+                    <input type="hidden" name="action" value="cash_in">
+                    <?php echo csrf_input(); ?>
+                    <label>Amount
+                        <input type="number" id="cashInAmount" name="amount" placeholder="1000.00" min="0.01" step="0.01" required>
+                    </label>
+                    <label>Currency
+                        <select id="cashInCurrency" name="cash_in_currency"></select>
+                    </label>
+                    <button type="submit" class="primary-button">Cash in</button>
+                </form>
+            </article>
+
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
                         <p class="eyebrow">Send Money</p>
                         <h2>Transfer with live conversion</h2>
                     </div>
                     <span class="badge success">Validated Flow</span>
                 </div>
-                <form id="sendForm" class="form-stack">
+                <form id="sendForm" class="form-stack" method="post" action="wallets.php">
+                    <input type="hidden" name="action" value="send_money">
+                    <?php echo csrf_input(); ?>
                     <label>Recipient Email
-                        <input type="email" id="recipientEmail" placeholder="juan@perahp.test" required>
+                        <input type="email" id="recipientEmail" name="recipient_email" placeholder="juan@perahp.test" required>
                     </label>
                     <label>Amount
-                        <input type="number" id="sendAmount" placeholder="100.00" step="0.01" required>
+                        <input type="number" id="sendAmount" name="amount" placeholder="100.00" min="0.01" step="0.01" required>
                     </label>
                     <div class="form-row two">
-                        <label>From <select id="sendFrom"></select></label>
-                        <label>To <select id="sendTo"></select></label>
+                        <label>From <select id="sendFrom" name="send_from"></select></label>
+                        <label>To <select id="sendTo" name="send_to"></select></label>
                     </div>
                     <div class="conversion-preview">
                         <span>Converted amount</span>
@@ -100,15 +136,17 @@ $walletPageData = perahp_wallet_page_data($user);
                     </div>
                     <span class="badge warning">Pending Queue</span>
                 </div>
-                <form id="requestForm" class="form-stack">
+                <form id="requestForm" class="form-stack" method="post" action="wallets.php">
+                    <input type="hidden" name="action" value="request_payment">
+                    <?php echo csrf_input(); ?>
                     <label>Amount
-                        <input type="number" id="requestAmount" placeholder="2500" step="0.01" required>
+                        <input type="number" id="requestAmount" name="amount" placeholder="2500" min="0.01" step="0.01" required>
                     </label>
                     <label>Currency
-                        <select id="requestCurrency"></select>
+                        <select id="requestCurrency" name="request_currency"></select>
                     </label>
                     <label>Payer Email
-                        <input type="email" id="payerEmail" placeholder="client@example.com" required>
+                        <input type="email" id="payerEmail" name="payer_email" placeholder="client@example.com" required>
                     </label>
                     <button type="submit" class="secondary-button">Generate reference</button>
                     <div class="reference-box" style="margin-top:20px;">

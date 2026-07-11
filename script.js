@@ -16,6 +16,11 @@ let wallets = perahpPageData.wallets || [
     { code: "SGD", name: "Singapore Dollar", balance: 440, accent: "success" }
 ];
 
+let currencies = perahpPageData.currencies || Object.keys(ratesToPhp).map(code => {
+    const wallet = wallets.find(w => w.code === code);
+    return { code, name: wallet?.name || code };
+});
+
 let transactions = perahpPageData.transactions || [
     { ref: "RCV-260701-214", type: "Receive", user: "Client Example", amount: 74930, currency: "PHP", status: "completed", date: "Jul 1, 2026" },
     { ref: "SEND-260630-A91", type: "Send", user: "Juan Dela Cruz", amount: 100, currency: "USD", status: "completed", date: "Jun 30, 2026" },
@@ -57,11 +62,20 @@ function showToast(message) {
 }
 
 function populateCurrencyOptions() {
-    const selectIds = ["sendFrom", "sendTo", "requestCurrency", "exchangeFrom", "exchangeTo"];
-    selectIds.forEach(id => {
+    const walletSelectIds = ["sendFrom", "exchangeFrom"];
+    const currencySelectIds = ["sendTo", "requestCurrency", "exchangeTo", "cashInCurrency"];
+    const optionHtml = options => options.map(w => `<option value="${escapeHtml(w.code)}">${escapeHtml(w.code)} - ${escapeHtml(w.name)}</option>`).join("");
+
+    walletSelectIds.forEach(id => {
         const select = byId(id);
         if (!select) return;
-        select.innerHTML = wallets.map(w => `<option value="${escapeHtml(w.code)}">${escapeHtml(w.code)} - ${escapeHtml(w.name)}</option>`).join("");
+        select.innerHTML = optionHtml(wallets);
+    });
+
+    currencySelectIds.forEach(id => {
+        const select = byId(id);
+        if (!select) return;
+        select.innerHTML = optionHtml(currencies.length ? currencies : wallets);
     });
 }
 
@@ -154,12 +168,37 @@ function bindEvents() {
         window.location.href = "logout.php";
     });
 
-    byId("sendForm")?.addEventListener("submit", (e) => {
-        e.preventDefault();
+    byId("cashInForm")?.addEventListener("submit", (e) => {
         if (usesDatabaseWallets) {
-            showToast("Saving transfers to SQL is the next step.");
             return;
         }
+        e.preventDefault();
+        const amt = Number(byId("cashInAmount").value);
+        const currency = byId("cashInCurrency").value;
+        if (amt <= 0) {
+            showToast("Enter a valid cash in amount.");
+            return;
+        }
+
+        let wallet = findWallet(currency);
+        if (!wallet) {
+            const currencyInfo = currencies.find(c => c.code === currency) || { code: currency, name: currency };
+            wallet = { code: currencyInfo.code, name: currencyInfo.name, balance: 0, accent: "neutral" };
+            wallets.push(wallet);
+        }
+
+        wallet.balance += amt;
+        const currentMonth = monthlyReport[monthlyReport.length - 1];
+        if (currentMonth) currentMonth.received += phpValue(amt, currency);
+        transactions.unshift({ref:createReference("CASH"), type:"Cash in", user:"Self funding", amount:amt, currency:currency, status:"completed", date:todayLabel()});
+        renderAll(); showToast("Cash in complete.");
+    });
+
+    byId("sendForm")?.addEventListener("submit", (e) => {
+        if (usesDatabaseWallets) {
+            return;
+        }
+        e.preventDefault();
         const amt = Number(byId("sendAmount").value);
         const from = byId("sendFrom").value;
         const wallet = findWallet(from);
@@ -171,22 +210,20 @@ function bindEvents() {
     });
 
     byId("requestForm")?.addEventListener("submit", (e) => {
-        e.preventDefault();
         if (usesDatabaseWallets) {
-            showToast("Saving requests to SQL is the next step.");
             return;
         }
+        e.preventDefault();
         const ref = createReference("REQ");
         transactions.unshift({ref:ref, type:"Request", user:byId("payerEmail")?.value || "Payer", amount:Number(byId("requestAmount").value), currency:byId("requestCurrency").value, status:"pending", date:todayLabel()});
         setText("referenceCode", ref); renderAll(); showToast("Reference generated.");
     });
 
     byId("exchangeForm")?.addEventListener("submit", (e) => {
-        e.preventDefault();
         if (usesDatabaseWallets) {
-            showToast("Saving exchanges to SQL is the next step.");
             return;
         }
+        e.preventDefault();
         const amt = Number(byId("exchangeAmount").value);
         const from = byId("exchangeFrom").value, to = byId("exchangeTo").value;
         const fW = findWallet(from), tW = findWallet(to);

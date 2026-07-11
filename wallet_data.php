@@ -39,6 +39,34 @@ function perahp_default_wallets() {
     ];
 }
 
+function perahp_available_currencies($rates = null) {
+    $rates = $rates ?: perahp_default_rates();
+    $currencies = [];
+
+    foreach ($rates as $code => $rate) {
+        $code = perahp_currency_code($code);
+
+        if ($code === "") {
+            continue;
+        }
+
+        $meta = perahp_currency_meta($code);
+        $currencies[] = [
+            "code" => $code,
+            "name" => $meta["name"],
+            "accent" => $meta["accent"],
+            "rate" => (float) $rate
+        ];
+    }
+
+    usort($currencies, function($a, $b) {
+        $order = ["PHP" => 0, "USD" => 1, "EUR" => 2, "JPY" => 3, "SGD" => 4];
+        return ($order[$a["code"]] ?? 99) <=> ($order[$b["code"]] ?? 99);
+    });
+
+    return $currencies;
+}
+
 function perahp_exchange_rates() {
     $rates = perahp_default_rates();
     $pdo = perahp_db();
@@ -115,17 +143,22 @@ function perahp_wallet_page_data($user) {
     $isDatabaseUser = $userId > 0;
 
     if (!$isDatabaseUser) {
+        $rates = perahp_default_rates();
         return [
             "wallets" => perahp_default_wallets(),
-            "ratesToPhp" => perahp_default_rates(),
+            "ratesToPhp" => $rates,
+            "currencies" => perahp_available_currencies($rates),
             "walletSource" => "demo",
             "databaseReady" => false
         ];
     }
 
+    $rates = perahp_exchange_rates();
+
     return [
         "wallets" => perahp_user_wallets($userId),
-        "ratesToPhp" => perahp_exchange_rates(),
+        "ratesToPhp" => $rates,
+        "currencies" => perahp_available_currencies($rates),
         "walletSource" => "database",
         "databaseReady" => perahp_db() !== null
     ];

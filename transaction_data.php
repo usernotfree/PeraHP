@@ -195,19 +195,14 @@ function perahp_pending_request_count($userId) {
 
     try {
         $statement = $pdo->prepare(
-            "SELECT
-                (SELECT COUNT(*) FROM payment_requests
-                 WHERE (requester_user_id = :requester_id OR payer_user_id = :payer_id)
-                   AND status = 'pending')
-                +
-                (SELECT COUNT(*) FROM transactions
-                 WHERE user_id = :transaction_user_id AND transaction_type = 'request' AND status = 'pending')
-                AS pending_count"
+            "SELECT COUNT(*) AS pending_count
+             FROM payment_requests
+             WHERE (requester_user_id = :requester_id OR payer_user_id = :payer_id)
+               AND status = 'pending'"
         );
         $statement->execute([
             "requester_id" => $userId,
-            "payer_id" => $userId,
-            "transaction_user_id" => $userId
+            "payer_id" => $userId
         ]);
 
         return (int) ($statement->fetch()["pending_count"] ?? 0);

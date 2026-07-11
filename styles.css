@@ -642,6 +642,27 @@ button:disabled,
     font-weight: 800;
 }
 
+.action-alert {
+    margin-bottom: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    background: #fbfcfb;
+    font-weight: 800;
+}
+
+.action-alert.success {
+    color: #0f684c;
+    background: #dff5eb;
+    border-color: #bfe8d5;
+}
+
+.action-alert.error {
+    color: #87291f;
+    background: #fff1ef;
+    border-color: #f1b7ad;
+}
+
 .demo-credentials,
 .auth-preview-card,
 .auth-links {
