@@ -134,6 +134,7 @@ $walletCount = count($walletPageData["wallets"]);
             </article>
         </section>
 
+        <?php if (is_admin_user($user)): ?>
         <article class="panel">
             <div class="panel-heading">
                 <div>
@@ -154,12 +155,11 @@ $walletCount = count($walletPageData["wallets"]);
                 <article class="security-card"><span>Roles</span><strong>User and admin split</strong><small>Administrative actions are grouped away from normal wallet tasks.</small></article>
                 <article class="security-card"><span>Audit</span><strong>Activity trail ready</strong><small>Login and transaction events have clear spaces for backend records.</small></article>
             </section>
-            <?php if (is_admin_user($user)): ?>
-                <div style="margin-top:18px;">
-                    <a class="primary-button" href="admin.php">Open admin dashboard</a>
-                </div>
-            <?php endif; ?>
+            <div style="margin-top:18px;">
+                <a class="primary-button" href="admin.php">Open admin dashboard</a>
+            </div>
         </article>
+        <?php endif; ?>
     </div>
 
     <div class="toast" id="toast">Action completed</div>
