@@ -196,7 +196,7 @@ function require_admin() {
         return;
     }
 
-    header("Location: main.php");
+    header("Location: access_denied.php");
     exit;
 }
 ?>
