@@ -869,6 +869,30 @@ th {
     padding: 12px;
 }
 
+.settings-list {
+    display: grid;
+    gap: 12px;
+}
+
+.settings-list > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fbfcfb;
+}
+
+.settings-list span {
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
 .mini-button {
     min-height: 32px;
     padding: 7px 9px;

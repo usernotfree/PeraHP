@@ -1,7 +1,18 @@
 <?php
 require_once __DIR__ . "/auth.php";
+require_once __DIR__ . "/account_actions.php";
 require_login();
 $user = current_user();
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    perahp_handle_account_post($user, ["update_profile"]);
+    header("Location: profile.php");
+    exit;
+}
+
+$flash = perahp_account_take_flash();
+$user = current_user();
+$initials = strtoupper(substr(trim($user["name"]), 0, 1));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,6 +65,10 @@ $user = current_user();
             </div>
         </header>
 
+        <?php if ($flash): ?>
+            <div class="action-alert <?php echo e($flash["type"] ?? ""); ?>"><?php echo e($flash["message"] ?? ""); ?></div>
+        <?php endif; ?>
+
         <section class="overview-band profile-overview">
             <div class="overview-copy">
                 <p class="eyebrow">Account Profile</p>
@@ -61,7 +76,7 @@ $user = current_user();
                 <p>Your profile keeps the account owner, contact details, verification state, and account access information in one place.</p>
             </div>
             <div class="readiness-card profile-card">
-                <div class="profile-avatar">MS</div>
+                <div class="profile-avatar"><?php echo e($initials); ?></div>
                 <h2 style="font-size:1.1rem;"><?php echo e($user["role"]); ?></h2>
                 <div class="readiness-list">
                     <div><span>Status</span><span><?php echo e($user["status"]); ?></span></div>
@@ -100,12 +115,14 @@ $user = current_user();
                     <div><p class="eyebrow">Profile Details</p><h2>Personal information</h2></div>
                     <span class="badge success"><?php echo e($user["status"]); ?></span>
                 </div>
-                <form class="form-stack" id="profileForm">
-                    <label>Full name<input type="text" value="<?php echo e($user["name"]); ?>"></label>
-                    <label>Email<input type="email" value="<?php echo e($user["email"]); ?>"></label>
+                <form class="form-stack" id="profileForm" method="post" action="profile.php">
+                    <input type="hidden" name="action" value="update_profile">
+                    <?php echo csrf_input(); ?>
+                    <label>Full name<input type="text" name="full_name" value="<?php echo e($user["name"]); ?>" required></label>
+                    <label>Email<input type="email" value="<?php echo e($user["email"]); ?>" readonly></label>
                     <div class="form-row two">
-                        <label>Phone<input type="text" value="<?php echo e($user["phone"]); ?>"></label>
-                        <label>City / Province<input type="text" value="<?php echo e($user["address"]); ?>"></label>
+                        <label>Phone<input type="text" name="phone" value="<?php echo e($user["phone"]); ?>"></label>
+                        <label>City / Province<input type="text" name="address" value="<?php echo e($user["address"]); ?>"></label>
                     </div>
                     <button class="primary-button" type="submit">Save profile</button>
                 </form>
