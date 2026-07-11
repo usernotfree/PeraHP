@@ -25,7 +25,7 @@ $currencies = perahp_available_currencies($rates);
 </head>
 <body>
     <aside class="sidebar" id="sidebar">
-        <a class="brand" href="main.php"><span class="brand-mark">PHP</span><div><strong>PeraHP</strong><small>Digital wallet</small></div></a>
+        <a class="brand" href="main.php"><img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo"><div><strong>PeraHP</strong><small>Digital wallet</small></div></a>
         <nav class="nav-list">
             <a class="nav-link" href="main.php">Dashboard</a>
             <a class="nav-link" href="wallets.php">Wallets</a>
