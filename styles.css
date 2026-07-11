@@ -215,6 +215,12 @@ a:focus-visible {
     background: var(--coral);
 }
 
+.primary-button:hover {
+    color: white;
+    background: #d94f39;
+    border-color: #d94f39;
+}
+
 .secondary-button {
     color: white;
     background: var(--teal);
@@ -587,10 +593,16 @@ button:disabled,
 .auth-page {
     display: grid;
     place-items: center;
+    min-height: 100vh;
     padding: 32px;
-    background:
-        linear-gradient(135deg, rgba(6, 63, 59, 0.93), rgba(14, 107, 100, 0.7)),
-        var(--surface);
+    background-color: #07110f;
+    background-image:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.34)),
+        url("./moneybackground.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .auth-shell {
@@ -599,6 +611,12 @@ button:disabled,
     grid-template-columns: minmax(320px, 0.92fr) minmax(320px, 1.08fr);
     gap: 18px;
     align-items: stretch;
+}
+
+.logout-shell {
+    width: min(520px, 100%);
+    grid-template-columns: 1fr;
+    place-items: center;
 }
 
 .login-panel,
@@ -613,6 +631,12 @@ button:disabled,
     gap: 22px;
     padding: 28px;
     background: var(--paper);
+}
+
+.logout-panel {
+    width: 100%;
+    text-align: center;
+    justify-items: center;
 }
 
 .auth-brand {
@@ -637,13 +661,14 @@ button:disabled,
 }
 
 .auth-copy h1 {
-    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-size: clamp(2.12rem, 4.2vw, 3.35rem);
 }
 
 .auth-copy p,
 .auth-preview-card small,
 .auth-links {
     color: var(--muted);
+    font-size: 1.06rem;
     line-height: 1.55;
 }
 
@@ -729,9 +754,8 @@ button:disabled,
     min-height: 520px;
     padding: 36px;
     color: white;
-    background:
-        linear-gradient(145deg, rgba(6, 63, 59, 0.96), rgba(49, 93, 143, 0.86)),
-        var(--teal-dark);
+    background: rgba(5, 18, 17, 0.74);
+    backdrop-filter: blur(4px);
 }
 
 .auth-showcase .eyebrow {
@@ -891,36 +915,6 @@ th {
     font-size: 0.76rem;
     font-weight: 900;
     text-transform: uppercase;
-}
-
-.mini-button.active-filter,
-.mini-button.approve-button {
-    color: #0f684c;
-    background: #dff5eb;
-    border-color: #bfe8d5;
-}
-
-.mini-button.reject-button {
-    color: #87291f;
-    background: #fff1ef;
-    border-color: #f1b7ad;
-}
-
-.admin-actions,
-.request-actions,
-.reject-form {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-}
-
-.reject-form input {
-    min-height: 32px;
-    max-width: 180px;
-    padding: 7px 9px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
 }
 
 .mini-button {
