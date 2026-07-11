@@ -115,7 +115,7 @@ function renderActivity() {
         list.innerHTML = "<div class=\"activity-row\"><div><strong>No recent activity</strong><small>Transactions will appear here after money moves through the account.</small></div></div>";
         return;
     }
-    list.innerHTML = transactions.slice(0, 5).map(t => `<div class="activity-row"><div><strong>${escapeHtml(t.type)}</strong><small>${escapeHtml(t.ref)} - ${escapeHtml(t.user)}</small></div><div><strong class="activity-amount">${money(t.amount, t.currency)}</strong><span class="badge ${statusClass(t.status)}">${statusLabel(t.status)}</span></div></div>`).join("");
+    list.innerHTML = transactions.slice(0, 5).map(t => `<div class="activity-row"><div class="activity-copy"><strong>${escapeHtml(t.type)}</strong><small>${escapeHtml(t.ref)} - ${escapeHtml(t.user)}</small></div><div class="activity-meta"><strong class="activity-amount">${money(t.amount, t.currency)}</strong><span class="badge ${statusClass(t.status)}">${statusLabel(t.status)}</span></div></div>`).join("");
 }
 
 function renderTransactions() {
