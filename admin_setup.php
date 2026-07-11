@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $dbReady && !$adminExists) {
     <main class="auth-shell">
         <section class="login-panel">
             <a class="brand auth-brand" href="login.php">
-                <span class="brand-mark">PHP</span>
+                <img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo">
                 <div><strong>PeraHP</strong><small>Digital wallet</small></div>
             </a>
 
