@@ -31,9 +31,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PeraHP - Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260712-bg">
 </head>
-<body class="auth-page">
+<body class="auth-page" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.34)), url('moneybackground.jpg') center / cover no-repeat fixed !important;">
     <main class="auth-shell">
         <section class="login-panel">
             <a class="brand auth-brand" href="login.php">
@@ -71,14 +71,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <small>Password: <?php echo e(PERAHP_LOGIN_PASSWORD); ?></small>
             </div>
 
-            <div class="auth-links">
-                <span>Need an account?</span>
-                <a href="register.php?next=<?php echo urlencode($next); ?>">Create one</a>
+            <div class="demo-credentials">
+                <span>Admin account</span>
+                <strong><?php echo e(PERAHP_ADMIN_EMAIL); ?></strong>
+                <small>Password: <?php echo e(PERAHP_ADMIN_PASSWORD); ?></small>
             </div>
 
             <div class="auth-links">
-                <span>Setting up admin?</span>
-                <a href="admin_setup.php">Create first admin</a>
+                <span>Need an account?</span>
+                <a href="register.php?next=<?php echo urlencode($next); ?>">Create one</a>
             </div>
         </section>
 
@@ -87,8 +88,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <h2>Promos first, money tools when you need them.</h2>
             <div class="auth-preview-card">
                 <span>Available balance</span>
-                <strong>SQL backed</strong>
-                <small>Registered accounts show real wallet, transaction, and report records after sign in.</small>
+                <strong>PHP 128,090.00</strong>
+                <small>Cash in, send, request, and track spending after sign in.</small>
             </div>
         </section>
     </main>
