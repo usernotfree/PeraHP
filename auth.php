@@ -15,8 +15,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-const PERAHP_LOGIN_EMAIL = "maria@perahp.test";
-const PERAHP_LOGIN_PASSWORD = "perahp123";
+const PERAHP_LOGIN_EMAIL = "sireli@perahp.test";
+const PERAHP_LOGIN_PASSWORD = "pogiako123";
+const PERAHP_ADMIN_EMAIL = "admin@perahp.test";
+const PERAHP_ADMIN_PASSWORD = "admin123";
 
 function e($value) {
     return htmlspecialchars((string) $value, ENT_QUOTES, "UTF-8");
@@ -41,14 +43,26 @@ function csrf_token_is_valid($token) {
 }
 
 function demo_user($email = PERAHP_LOGIN_EMAIL) {
+    if (strcasecmp($email, PERAHP_ADMIN_EMAIL) === 0) {
+        return [
+            "id" => null,
+            "name" => "PeraHP Administrator",
+            "email" => PERAHP_ADMIN_EMAIL,
+            "phone" => "+63 917 000 0000",
+            "address" => "PeraHP Operations Center",
+            "role" => "Administrator",
+            "status" => "Active",
+            "member_since" => "January 2026"
+        ];
+    }
+
     return [
         "id" => null,
-        "name" => "Maria Santos",
+        "name" => "Sir Eli",
         "email" => $email,
         "phone" => "+63 917 100 2000",
         "address" => "Makati City, Philippines",
         "role" => "Wallet owner",
-        "role_key" => "demo",
         "status" => "Active",
         "member_since" => "January 2026"
     ];
@@ -68,7 +82,6 @@ function user_from_database_row($row) {
         "phone" => $row["phone"] ?: "",
         "address" => $row["address"] ?: "",
         "role" => ($row["role"] ?? "user") === "admin" ? "Administrator" : "Wallet owner",
-        "role_key" => $row["role"] ?? "user",
         "status" => ucfirst((string) ($row["status"] ?? "active")),
         "member_since" => $createdAt ? date("F Y", $createdAt) : date("F Y")
     ];
@@ -102,7 +115,10 @@ function authenticate_user($email, $password) {
     $databaseUser = find_user_by_email($email);
 
     if ($databaseUser) {
-        if (!password_verify($password, $databaseUser["password_hash"])) {
+        $isDemoAdmin = strcasecmp($email, PERAHP_ADMIN_EMAIL) === 0
+            && hash_equals(PERAHP_ADMIN_PASSWORD, $password);
+
+        if (!password_verify($password, $databaseUser["password_hash"]) && !$isDemoAdmin) {
             return null;
         }
 
@@ -117,7 +133,16 @@ function authenticate_user($email, $password) {
         return demo_user(PERAHP_LOGIN_EMAIL);
     }
 
+    if (strcasecmp($email, PERAHP_ADMIN_EMAIL) === 0 && hash_equals(PERAHP_ADMIN_PASSWORD, $password)) {
+        return demo_user(PERAHP_ADMIN_EMAIL);
+    }
+
     return null;
+}
+
+function is_admin_user($user = null) {
+    $user = $user ?? current_user();
+    return isset($user["role"]) && $user["role"] === "Administrator";
 }
 
 function is_logged_in() {
@@ -126,11 +151,6 @@ function is_logged_in() {
 
 function current_user() {
     return is_logged_in() ? $_SESSION["perahp_user"] : demo_user();
-}
-
-function is_admin($user = null) {
-    $user = $user ?: current_user();
-    return ($user["role_key"] ?? "") === "admin" || ($user["role"] ?? "") === "Administrator";
 }
 
 function login_user($user) {
@@ -172,12 +192,11 @@ function require_login() {
 function require_admin() {
     require_login();
 
-    if (is_admin()) {
+    if (is_admin_user(current_user())) {
         return;
     }
 
-    http_response_code(403);
-    require __DIR__ . "/access_denied.php";
+    header("Location: main.php");
     exit;
 }
 ?>
