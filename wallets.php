@@ -1,7 +1,9 @@
 <?php
 require_once __DIR__ . "/auth.php";
+require_once __DIR__ . "/wallet_data.php";
 require_login();
 $user = current_user();
+$walletPageData = perahp_wallet_page_data($user);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,8 +55,11 @@ $user = current_user();
         <section class="panel" style="margin-bottom: 25px;">
             <div class="panel-heading">
                 <div><p class="eyebrow">Wallets</p><h2>Multi-currency balances</h2></div>
-                <span class="badge neutral">PHP base</span>
+                <span class="badge neutral"><?php echo $walletPageData["walletSource"] === "database" ? "Database" : "Demo"; ?> data</span>
             </div>
+            <?php if ($walletPageData["walletSource"] === "database" && count($walletPageData["wallets"]) === 0): ?>
+                <div class="auth-alert">No active wallets were found for this account yet.</div>
+            <?php endif; ?>
             <div class="wallet-grid" id="walletGrid"></div>
         </section>
 
@@ -117,6 +122,9 @@ $user = current_user();
     </div>
 
     <div class="toast" id="toast">Action completed</div>
+    <script>
+        window.PERAHP_DATA = <?php echo perahp_json($walletPageData); ?>;
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

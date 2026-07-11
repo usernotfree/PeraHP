@@ -1,8 +1,11 @@
 <?php
 require_once __DIR__ . "/auth.php";
+require_once __DIR__ . "/wallet_data.php";
 require_login();
 $user = current_user();
 $userFirstName = explode(" ", trim($user["name"]))[0] ?: $user["name"];
+$walletPageData = perahp_wallet_page_data($user);
+$walletCount = count($walletPageData["wallets"]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,7 +72,7 @@ $userFirstName = explode(" ", trim($user["name"]))[0] ?: $user["name"];
                 <div class="progress-meter"><span style="width:76%;"></span></div>
                 <div class="readiness-list">
                     <div><span>Profile</span><span>✅ Complete</span></div>
-                    <div><span>Wallets</span><span>✅ 5 active</span></div>
+                    <div><span>Wallets</span><span><?php echo e($walletCount); ?> active</span></div>
                     <div><span>Verification</span><span>⏳ Pending</span></div>
                 </div>
             </div>
@@ -109,7 +112,7 @@ $userFirstName = explode(" ", trim($user["name"]))[0] ?: $user["name"];
             <article class="panel">
                 <div class="panel-heading">
                     <div><p class="eyebrow">Wallets</p><h2>Multi-currency balances</h2></div>
-                    <span class="badge neutral">PHP base</span>
+                    <span class="badge neutral"><?php echo $walletPageData["walletSource"] === "database" ? "Database" : "Demo"; ?> data</span>
                 </div>
                 <div class="wallet-grid" id="walletGrid"></div>
             </article>
@@ -147,6 +150,9 @@ $userFirstName = explode(" ", trim($user["name"]))[0] ?: $user["name"];
     </div>
 
     <div class="toast" id="toast">Action completed</div>
+    <script>
+        window.PERAHP_DATA = <?php echo perahp_json($walletPageData); ?>;
+    </script>
     <script src="script.js"></script>
 </body>
 </html>

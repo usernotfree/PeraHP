@@ -1,4 +1,6 @@
-const ratesToPhp = {
+const perahpPageData = window.PERAHP_DATA || {};
+const usesDatabaseWallets = perahpPageData.walletSource === "database";
+const ratesToPhp = perahpPageData.ratesToPhp || {
     PHP: 1,
     USD: 58.5,
     EUR: 63.2,
@@ -6,7 +8,7 @@ const ratesToPhp = {
     SGD: 43.4
 };
 
-const wallets = [
+let wallets = perahpPageData.wallets || [
     { code: "PHP", name: "Philippine Peso", balance: 25000, accent: "neutral" },
     { code: "USD", name: "US Dollar", balance: 850, accent: "success" },
     { code: "EUR", name: "Euro", balance: 320, accent: "warning" },
@@ -33,9 +35,11 @@ const monthlyReport = [
 
 function byId(id) { return document.getElementById(id); }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, function(c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]; }); }
+function classToken(value, fallback) { const token = String(value || ""); return /^[a-z0-9_-]+$/i.test(token) ? token : fallback; }
 function money(amount, code) { return code + " " + (Number(amount) || 0).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}); }
-function phpValue(amount, code) { return (Number(amount) || 0) * (ratesToPhp[code] || 1); }
-function convert(amount, from, to) { return phpValue(amount, from) / (ratesToPhp[to] || 1); }
+function rateFor(code) { return Number(ratesToPhp[code]) || 1; }
+function phpValue(amount, code) { return (Number(amount) || 0) * rateFor(code); }
+function convert(amount, from, to) { return phpValue(amount, from) / rateFor(to); }
 function findWallet(code) { return wallets.find(w => w.code === code); }
 function setText(id, value) { const el = byId(id); if (el) el.textContent = value; }
 function statusClass(s) { return s === "completed" ? "success" : s === "pending" ? "warning" : s === "failed" ? "danger" : "neutral"; }
@@ -57,7 +61,7 @@ function populateCurrencyOptions() {
     selectIds.forEach(id => {
         const select = byId(id);
         if (!select) return;
-        select.innerHTML = wallets.map(w => `<option value="${w.code}">${w.code} - ${w.name}</option>`).join("");
+        select.innerHTML = wallets.map(w => `<option value="${escapeHtml(w.code)}">${escapeHtml(w.code)} - ${escapeHtml(w.name)}</option>`).join("");
     });
 }
 
@@ -74,13 +78,17 @@ function renderMetrics() {
 function renderWallets() {
     const grid = byId("walletGrid");
     if (!grid) return;
-    grid.innerHTML = wallets.map(w => `<div class="wallet-card"><div class="wallet-top"><span class="badge ${w.accent}">${w.code}</span><strong>${money(w.balance, w.code)}</strong></div><small>${escapeHtml(w.name)} - 1 ${w.code} = PHP ${ratesToPhp[w.code].toFixed(2)}</small><small>PHP value: ${money(phpValue(w.balance, w.code), "PHP")}</small></div>`).join("");
+    if (!wallets.length) {
+        grid.innerHTML = "<div class=\"wallet-card\"><strong>No active wallets found.</strong><small>Create a wallet or contact an administrator to enable balances.</small></div>";
+        return;
+    }
+    grid.innerHTML = wallets.map(w => `<div class="wallet-card"><div class="wallet-top"><span class="badge ${classToken(w.accent, "neutral")}">${escapeHtml(w.code)}</span><strong>${money(w.balance, w.code)}</strong></div><small>${escapeHtml(w.name)} - 1 ${escapeHtml(w.code)} = PHP ${rateFor(w.code).toFixed(2)}</small><small>PHP value: ${money(phpValue(w.balance, w.code), "PHP")}</small></div>`).join("");
 }
 
 function renderRates() {
     const grid = byId("rateGrid");
     if (!grid) return;
-    grid.innerHTML = wallets.map(w => `<article class="rate-card"><span>${w.code}</span><strong>1 ${w.code} = PHP ${ratesToPhp[w.code].toFixed(2)}</strong><small>Used for wallet totals, transfers, exchanges, and reports.</small></article>`).join("");
+    grid.innerHTML = wallets.map(w => `<article class="rate-card"><span>${escapeHtml(w.code)}</span><strong>1 ${escapeHtml(w.code)} = PHP ${rateFor(w.code).toFixed(2)}</strong><small>Used for wallet totals, transfers, exchanges, and reports.</small></article>`).join("");
 }
 
 function renderActivity() {
@@ -141,6 +149,10 @@ function bindEvents() {
 
     byId("sendForm")?.addEventListener("submit", (e) => {
         e.preventDefault();
+        if (usesDatabaseWallets) {
+            showToast("Saving transfers to SQL is the next step.");
+            return;
+        }
         const amt = Number(byId("sendAmount").value);
         const from = byId("sendFrom").value;
         const wallet = findWallet(from);
@@ -153,6 +165,10 @@ function bindEvents() {
 
     byId("requestForm")?.addEventListener("submit", (e) => {
         e.preventDefault();
+        if (usesDatabaseWallets) {
+            showToast("Saving requests to SQL is the next step.");
+            return;
+        }
         const ref = createReference("REQ");
         transactions.unshift({ref:ref, type:"Request", user:byId("payerEmail")?.value || "Payer", amount:Number(byId("requestAmount").value), currency:byId("requestCurrency").value, status:"pending", date:todayLabel()});
         setText("referenceCode", ref); renderAll(); showToast("Reference generated.");
@@ -160,6 +176,10 @@ function bindEvents() {
 
     byId("exchangeForm")?.addEventListener("submit", (e) => {
         e.preventDefault();
+        if (usesDatabaseWallets) {
+            showToast("Saving exchanges to SQL is the next step.");
+            return;
+        }
         const amt = Number(byId("exchangeAmount").value);
         const from = byId("exchangeFrom").value, to = byId("exchangeTo").value;
         const fW = findWallet(from), tW = findWallet(to);
