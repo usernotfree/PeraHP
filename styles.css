@@ -128,6 +128,20 @@ a:focus-visible {
     border-radius: var(--radius);
 }
 
+.profile-link {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.profile-link:hover strong,
+.profile-link:focus-visible strong {
+    text-decoration: underline;
+}
+
 .status-dot {
     width: 11px;
     height: 11px;

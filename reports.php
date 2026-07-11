@@ -30,8 +30,10 @@ $user = current_user();
             <a class="nav-link" href="settings.php">Settings</a>
         </nav>
         <div class="auth-box">
-            <span class="status-dot"></span>
-            <div><strong><?php echo e($user["name"]); ?></strong><small><?php echo e($user["email"]); ?></small></div>
+            <a class="profile-link" href="profile.php" aria-label="Open profile">
+                <span class="status-dot"></span>
+                <div><strong><?php echo e($user["name"]); ?></strong><small><?php echo e($user["email"]); ?></small></div>
+            </a>
             <a class="mini-button logout-link" href="logout.php" style="margin-left:auto;">Logout</a>
         </div>
     </aside>
