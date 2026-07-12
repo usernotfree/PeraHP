@@ -9,6 +9,8 @@ $walletPageData = perahp_wallet_page_data($user);
 $transactionPageData = perahp_transaction_page_data($user);
 $pageData = array_merge($walletPageData, $transactionPageData);
 $walletCount = count($walletPageData["wallets"]);
+$showLoginNotice = !empty($_SESSION["perahp_login_notice"]);
+unset($_SESSION["perahp_login_notice"]);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -167,6 +169,7 @@ $walletCount = count($walletPageData["wallets"]);
     <div class="toast" id="toast">Action completed</div>
     <script>
         window.PERAHP_DATA = <?php echo perahp_json($pageData); ?>;
+        window.PERAHP_LOGIN_NOTICE = <?php echo $showLoginNotice ? "true" : "false"; ?>;
     </script>
     <script src="script.js"></script>
 </body>

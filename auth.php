@@ -160,6 +160,7 @@ function current_user() {
 function login_user($user) {
     session_regenerate_id(true);
     $_SESSION["perahp_user"] = is_array($user) ? $user : demo_user($user);
+    $_SESSION["perahp_login_notice"] = true;
 }
 
 function logout_user() {
@@ -204,3 +205,4 @@ function require_admin() {
     exit;
 }
 ?>
+

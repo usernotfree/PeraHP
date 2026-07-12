@@ -92,6 +92,31 @@ function initializeInterface() {
         });
     }
 
+    if (sidebar) {
+        sidebar.querySelectorAll(".nav-link").forEach(link => {
+            link.title = link.textContent.trim();
+        });
+        const collapseButton = document.createElement("button");
+        collapseButton.type = "button";
+        collapseButton.className = "sidebar-collapse";
+        collapseButton.setAttribute("aria-label", "Collapse sidebar");
+        collapseButton.innerHTML = "<span aria-hidden=\"true\">‹</span>";
+        sidebar.appendChild(collapseButton);
+
+        const setCollapsed = collapsed => {
+            body.classList.toggle("sidebar-collapsed", collapsed);
+            collapseButton.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+            collapseButton.setAttribute("aria-expanded", String(!collapsed));
+            collapseButton.querySelector("span").textContent = collapsed ? "›" : "‹";
+        };
+        setCollapsed(localStorage.getItem("perahp-sidebar") === "collapsed");
+        collapseButton.addEventListener("click", () => {
+            const collapsed = !body.classList.contains("sidebar-collapsed");
+            setCollapsed(collapsed);
+            localStorage.setItem("perahp-sidebar", collapsed ? "collapsed" : "expanded");
+        });
+    }
+
     const actions = document.querySelector(".top-actions");
     if (actions) {
         const themeButton = document.createElement("button");
@@ -123,6 +148,22 @@ function initializeInterface() {
             });
         }, { threshold: 0.08 });
         revealItems.forEach(item => observer.observe(item));
+    }
+
+    if (window.PERAHP_LOGIN_NOTICE) {
+        const notice = document.createElement("aside");
+        notice.className = "login-notice";
+        notice.setAttribute("role", "status");
+        notice.setAttribute("aria-live", "polite");
+        notice.innerHTML = `<span class="login-notice-icon" aria-hidden="true">✓</span><div><strong>You're logged in</strong><small>Welcome back. Your PeraHP wallet is ready.</small></div><button type="button" aria-label="Dismiss notification">×</button>`;
+        document.body.appendChild(notice);
+        const dismiss = () => {
+            notice.classList.remove("show");
+            window.setTimeout(() => notice.remove(), 250);
+        };
+        notice.querySelector("button").addEventListener("click", dismiss);
+        window.requestAnimationFrame(() => notice.classList.add("show"));
+        window.setTimeout(dismiss, 5200);
     }
 }
 
@@ -310,4 +351,3 @@ function initializeDashboard() {
 }
 
 document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", initializeDashboard) : initializeDashboard();
-
