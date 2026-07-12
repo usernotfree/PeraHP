@@ -1265,6 +1265,18 @@ body.dark-mode .settings-list > div { background: #252538; }
 body.dark-mode .ghost-button, body.dark-mode .mini-button, body.dark-mode .icon-button,
 body.dark-mode input, body.dark-mode select { color: var(--ink); background: #28283b; }
 body.dark-mode tbody tr:hover { background: rgba(255,255,255,.035); }
+body.dark-mode .panel,
+body.dark-mode .metric-card,
+body.dark-mode .action-tile,
+body.dark-mode .auth-preview,
+body.dark-mode .overview-band { background: var(--paper); border-color: var(--line); }
+body.dark-mode .conversion-preview { background: #302d3e; }
+body.dark-mode .action-alert { color: var(--ink); background: #28283b; border-color: var(--line); }
+body.dark-mode table { color: var(--ink); }
+body.dark-mode th, body.dark-mode td { border-color: var(--line); }
+body.dark-mode option { color: var(--ink); background: #28283b; }
+body.dark-mode .module-card,
+body.dark-mode .security-card { background: #252538; border-color: var(--line); }
 
 @media (max-width: 1180px) {
     .page { margin-left: 0; }
@@ -1361,6 +1373,7 @@ body.dark-mode .login-notice { background: rgba(37,37,56,.96); }
     .login-notice { top: 16px; right: 16px; }
 }
 
+/* Public promotions home ------------------------------------------------- */
 .home-page { --home-navy: #20203e; overflow-x: hidden; background: #fbfaf8; }
 .home-header { position: sticky; top: 0; z-index: 50; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 30px; padding: 15px clamp(20px,5vw,76px); border-bottom: 1px solid rgba(34,34,63,.08); background: rgba(251,250,248,.88); backdrop-filter: blur(18px); }
 .home-brand { display: inline-flex; width: fit-content; align-items: center; gap: 13px; color: var(--home-navy); text-decoration: none; }
@@ -1402,11 +1415,13 @@ body.dark-mode .login-notice { background: rgba(37,37,56,.96); }
 .home-final { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; margin: 100px 0; padding: 45px; border-radius: 32px; color: #fff; background: var(--home-navy); }.home-final img { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; transition: transform .35s ease; }.home-final:hover img { transform: rotate(8deg) scale(1.08); }.home-final h2 { max-width: 750px; color: #fff; font-size: clamp(2rem,3.6vw,3.8rem); }.home-final .home-kicker { color: #9de4d3; }
 .home-footer { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 30px clamp(20px,5vw,76px); border-top: 1px solid #e5e3df; color: #82818d; font-size: .82rem; }.footer-brand img { width: 55px; height: 55px; }
 
+/* Make the application logo more prominent and playful too. */
 .sidebar .brand-mark,.auth-brand .brand-mark { width: 62px; height: 62px; flex-basis: 62px; transition: transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease; }.sidebar .brand:hover .brand-mark,.auth-brand:hover .brand-mark { transform: rotate(-7deg) scale(1.1); box-shadow: 0 12px 27px rgba(0,0,0,.24); }.sidebar .brand:active .brand-mark,.auth-brand:active .brand-mark { transform: rotate(4deg) scale(.96); }
 
 @media (max-width: 980px) { .home-header { grid-template-columns: 1fr auto; }.home-nav { display:none; }.home-hero { grid-template-columns:1fr; }.hero-offer-card { min-height:440px; transform:none; }.promo-grid { grid-template-columns:1fr 1fr; }.promo-card:last-child { grid-column:span 2; }.perks-section { grid-template-columns:1fr; }.home-final { grid-template-columns:auto 1fr; }.home-final .home-cta { grid-column:1/-1; } }
 @media (max-width: 650px) { .home-header { padding:10px 16px; }.home-brand img { width:55px;height:55px; }.home-brand small,.home-user,.home-login.secondary { display:none; }.home-login { padding:10px 14px; }.home-page main { padding:0 16px; }.home-hero { min-height:auto;padding:55px 0; }.home-hero h1 { font-size:clamp(3rem,15vw,5rem); }.hero-offer-card { min-height:430px;border-radius:28px; }.home-trust { grid-template-columns:1fr 1fr;gap:18px; }.promo-section { padding:75px 0; }.home-section-heading { display:block; }.promo-grid { grid-template-columns:1fr; }.promo-card:last-child { grid-column:auto; }.perks-section { padding:55px 24px;border-radius:28px; }.home-final { grid-template-columns:1fr;padding:30px;margin:70px 0; }.home-final img { width:82px;height:82px; }.home-footer { align-items:flex-start;flex-direction:column; } }
 
+/* Top application navigation -------------------------------------------- */
 body.main-page { padding-top: 96px; }
 body.main-page .sidebar {
     inset: 0 0 auto 0;

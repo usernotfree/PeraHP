@@ -119,8 +119,21 @@ function initializeInterface() {
         });
     }
 
-    const actions = document.querySelector(".top-actions");
-    if (actions) {
+    let actions = document.querySelector(".top-actions");
+    const topbar = document.querySelector(".topbar");
+    if (!actions && topbar && sidebar) {
+        actions = document.createElement("div");
+        actions.className = "top-actions";
+        const existingMenu = topbar.querySelector("#menuButton");
+        if (existingMenu) actions.appendChild(existingMenu);
+        topbar.appendChild(actions);
+    }
+
+    if (sidebar && localStorage.getItem("perahp-theme") === "dark") {
+        body.classList.add("dark-mode");
+    }
+
+    if (actions && sidebar) {
         const themeButton = document.createElement("button");
         themeButton.type = "button";
         themeButton.className = "ghost-button theme-toggle";
@@ -129,7 +142,6 @@ function initializeInterface() {
             themeButton.textContent = body.classList.contains("dark-mode") ? "☀" : "☾";
             themeButton.title = body.classList.contains("dark-mode") ? "Use light mode" : "Use dark mode";
         };
-        if (localStorage.getItem("perahp-theme") === "dark") body.classList.add("dark-mode");
         setThemeIcon();
         themeButton.addEventListener("click", () => {
             body.classList.toggle("dark-mode");
