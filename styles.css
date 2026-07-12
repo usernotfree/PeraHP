@@ -1694,6 +1694,32 @@ body.auth-page .auth-preview-card:hover { transform:translateY(-4px) rotate(-1de
     .home-login { font-size:.78rem;padding-inline:11px; }
     .home-trust { grid-template-columns:1fr; }
 }
+
+/* Uniform home-page dark mode ------------------------------------------- */
+.home-theme-toggle { display:grid;width:42px;height:42px;flex:0 0 42px;place-items:center;padding:0;border:1px solid #dce9e0;border-radius:50%;color:#17452e;background:#fff;font-size:1rem; }
+.home-theme-toggle:hover { transform:translateY(-2px) rotate(8deg);border-color:#8fc9a3;background:#f0faf3;box-shadow:0 8px 20px rgba(26,91,49,.1); }
+body.home-page.dark-mode { --home-navy:#eef8f1;--ink:#eef8f1;--muted:#a1b5a8;--line:#294735;color:#eef8f1;background:radial-gradient(circle at 80% 0%,rgba(48,178,96,.1),transparent 30rem),#0d1812 !important; }
+body.home-page.dark-mode .home-header { border-color:#294735;background:rgba(13,24,18,.9); }
+body.home-page.dark-mode .home-brand,body.home-page.dark-mode .home-nav a,body.home-page.dark-mode .home-user { color:#dcecdf; }
+body.home-page.dark-mode .home-brand small { color:#98afa0; }
+body.home-page.dark-mode .home-nav a:hover { color:#62d48a; }
+body.home-page.dark-mode .home-login { color:#102519;background:#63cc86; }
+body.home-page.dark-mode .home-login.secondary { color:#dcecdf;background:transparent; }
+body.home-page.dark-mode .home-theme-toggle { border-color:#365844;color:#ecf8ef;background:#183022; }
+body.home-page.dark-mode .home-theme-toggle:hover { border-color:#4d8e63;background:#203d2b; }
+body.home-page.dark-mode .home-hero h1,body.home-page.dark-mode .home-text-link,body.home-page.dark-mode .home-section-heading h2,body.home-page.dark-mode .perks-copy h2,body.home-page.dark-mode .promo-card h3,body.home-page.dark-mode .promo-card a,body.home-page.dark-mode .perks-list h3 { color:#f1f9f3; }
+body.home-page.dark-mode .home-hero-copy>p:not(.home-kicker),body.home-page.dark-mode .home-section-heading>p,body.home-page.dark-mode .promo-card p,body.home-page.dark-mode .perks-copy>p:not(.home-kicker),body.home-page.dark-mode .perks-list p { color:#a5b8ab; }
+body.home-page.dark-mode .home-hero h1 em,body.home-page.dark-mode .home-kicker,body.home-page.dark-mode .perks-list article>span { color:#61d188; }
+body.home-page.dark-mode .home-trust { border-color:#294735;color:#92aa9a; }
+body.home-page.dark-mode .home-trust strong { color:#e9f5ec; }
+body.home-page.dark-mode .promo-lilac,body.home-page.dark-mode .promo-mint,body.home-page.dark-mode .promo-peach { border:1px solid #2b4a37;background:#172c20; }
+body.home-page.dark-mode .promo-card .promo-tag { color:#aee4bf;background:#254431; }
+body.home-page.dark-mode .promo-icon { color:#dff6e6;background:#286f43; }
+body.home-page.dark-mode .perks-section { border:1px solid #294735;background:#14271c; }
+body.home-page.dark-mode .perks-list article { border-color:#2c4837; }
+body.home-page.dark-mode .home-final { border:1px solid #376e49;background:linear-gradient(115deg,#123522,#1e6b3c); }
+body.home-page.dark-mode .home-footer { border-color:#294735;color:#90a697; }
+@media (max-width:650px) { .home-theme-toggle { width:40px;height:40px;flex-basis:40px; } }
 @media (max-width:560px) {
     body.auth-page { align-items:start;padding:12px; }
     body.auth-page .auth-shell { margin:auto 0;border-radius:23px; }

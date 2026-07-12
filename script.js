@@ -141,7 +141,7 @@ function initializeInterface() {
         topbar.appendChild(actions);
     }
 
-    if (sidebar && localStorage.getItem("perahp-theme") === "dark") {
+    if ((sidebar || body.classList.contains("home-page")) && localStorage.getItem("perahp-theme") === "dark") {
         body.classList.add("dark-mode");
     }
 
@@ -161,6 +161,26 @@ function initializeInterface() {
             setThemeIcon();
         });
         actions.appendChild(themeButton);
+    }
+
+    const homeAccount = document.querySelector(".home-account");
+    if (homeAccount) {
+        const homeThemeButton = document.createElement("button");
+        homeThemeButton.type = "button";
+        homeThemeButton.className = "home-theme-toggle";
+        homeThemeButton.setAttribute("aria-label", "Toggle dark mode");
+        const syncHomeTheme = () => {
+            const dark = body.classList.contains("dark-mode");
+            homeThemeButton.textContent = dark ? "☀" : "☾";
+            homeThemeButton.title = dark ? "Use light mode" : "Use dark mode";
+        };
+        syncHomeTheme();
+        homeThemeButton.addEventListener("click", () => {
+            body.classList.toggle("dark-mode");
+            localStorage.setItem("perahp-theme", body.classList.contains("dark-mode") ? "dark" : "light");
+            syncHomeTheme();
+        });
+        homeAccount.insertBefore(homeThemeButton, homeAccount.firstChild);
     }
 
     const revealItems = document.querySelectorAll(".overview-band, .metric-card, .action-tile, .panel, .auth-preview");
