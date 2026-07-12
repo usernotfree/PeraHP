@@ -1719,6 +1719,8 @@ body.home-page.dark-mode .perks-section { border:1px solid #294735;background:#1
 body.home-page.dark-mode .perks-list article { border-color:#2c4837; }
 body.home-page.dark-mode .home-final { border:1px solid #376e49;background:linear-gradient(115deg,#123522,#1e6b3c); }
 body.home-page.dark-mode .home-footer { border-color:#294735;color:#90a697; }
+body.home-page.dark-mode .home-cta.dark { color:#0f2819;background:#69d68d;box-shadow:0 12px 28px rgba(44,184,92,.18); }
+body.home-page.dark-mode .home-cta.dark:hover { color:#0b2014;background:#7ae39b;box-shadow:0 16px 34px rgba(44,184,92,.25); }
 @media (max-width:650px) { .home-theme-toggle { width:40px;height:40px;flex-basis:40px; } }
 @media (max-width:560px) {
     body.auth-page { align-items:start;padding:12px; }
