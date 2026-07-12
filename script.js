@@ -66,6 +66,8 @@ function initializeInterface() {
     const sidebar = byId("sidebar");
     const menu = byId("menuButton");
 
+    if (sidebar) body.classList.add("main-page");
+
     if (sidebar && menu) {
         const backdrop = document.createElement("div");
         backdrop.className = "sidebar-backdrop";
@@ -105,9 +107,9 @@ function initializeInterface() {
 
         const setCollapsed = collapsed => {
             body.classList.toggle("sidebar-collapsed", collapsed);
-            collapseButton.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+            collapseButton.setAttribute("aria-label", collapsed ? "Show navigation menu" : "Hide navigation menu");
             collapseButton.setAttribute("aria-expanded", String(!collapsed));
-            collapseButton.querySelector("span").textContent = collapsed ? "›" : "‹";
+            collapseButton.querySelector("span").textContent = collapsed ? "⌄" : "⌃";
         };
         setCollapsed(localStorage.getItem("perahp-sidebar") === "collapsed");
         collapseButton.addEventListener("click", () => {
@@ -351,3 +353,4 @@ function initializeDashboard() {
 }
 
 document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", initializeDashboard) : initializeDashboard();
+
