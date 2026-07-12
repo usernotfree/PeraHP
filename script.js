@@ -61,6 +61,71 @@ function showToast(message) {
     window.setTimeout(() => toast.classList.remove("show"), 2200);
 }
 
+function initializeInterface() {
+    const body = document.body;
+    const sidebar = byId("sidebar");
+    const menu = byId("menuButton");
+
+    if (sidebar && menu) {
+        const backdrop = document.createElement("div");
+        backdrop.className = "sidebar-backdrop";
+        backdrop.setAttribute("aria-hidden", "true");
+        document.body.appendChild(backdrop);
+
+        const closeSidebar = () => {
+            sidebar.classList.remove("open");
+            backdrop.classList.remove("show");
+            menu.setAttribute("aria-expanded", "false");
+        };
+        const syncSidebar = () => {
+            const isOpen = sidebar.classList.contains("open");
+            backdrop.classList.toggle("show", isOpen);
+            menu.setAttribute("aria-expanded", String(isOpen));
+        };
+        menu.setAttribute("aria-label", "Open navigation");
+        menu.setAttribute("aria-controls", "sidebar");
+        menu.setAttribute("aria-expanded", "false");
+        menu.addEventListener("click", () => window.requestAnimationFrame(syncSidebar));
+        backdrop.addEventListener("click", closeSidebar);
+        document.addEventListener("keydown", event => {
+            if (event.key === "Escape") closeSidebar();
+        });
+    }
+
+    const actions = document.querySelector(".top-actions");
+    if (actions) {
+        const themeButton = document.createElement("button");
+        themeButton.type = "button";
+        themeButton.className = "ghost-button theme-toggle";
+        themeButton.setAttribute("aria-label", "Toggle dark mode");
+        const setThemeIcon = () => {
+            themeButton.textContent = body.classList.contains("dark-mode") ? "☀" : "☾";
+            themeButton.title = body.classList.contains("dark-mode") ? "Use light mode" : "Use dark mode";
+        };
+        if (localStorage.getItem("perahp-theme") === "dark") body.classList.add("dark-mode");
+        setThemeIcon();
+        themeButton.addEventListener("click", () => {
+            body.classList.toggle("dark-mode");
+            localStorage.setItem("perahp-theme", body.classList.contains("dark-mode") ? "dark" : "light");
+            setThemeIcon();
+        });
+        actions.appendChild(themeButton);
+    }
+
+    const revealItems = document.querySelectorAll(".overview-band, .metric-card, .action-tile, .panel, .auth-preview");
+    if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        revealItems.forEach(item => item.classList.add("reveal-ready"));
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("reveal-visible");
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.08 });
+        revealItems.forEach(item => observer.observe(item));
+    }
+}
+
 function populateCurrencyOptions() {
     const walletSelectIds = ["sendFrom", "exchangeFrom"];
     const currencySelectIds = ["sendTo", "requestCurrency", "exchangeTo", "cashInCurrency"];
@@ -236,6 +301,7 @@ function bindEvents() {
 }
 
 function initializeDashboard() {
+    initializeInterface();
     populateCurrencyOptions();
     renderAll();
     updateSendPreview();
@@ -244,3 +310,4 @@ function initializeDashboard() {
 }
 
 document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", initializeDashboard) : initializeDashboard();
+
