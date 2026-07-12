@@ -1681,3 +1681,20 @@ body.dark-mode .static-rates h3 { color:#f0faf3; }
 body.dark-mode .static-rate-card { border-color:#355b42;color:#eaf8ee;background:#203b2a; }
 body.dark-mode .static-rate-card:hover { border-color:#4b9c67;background:#274833; }
 
+body.auth-logout .logout-panel { text-align:left; }
+body.auth-logout .logout-panel>.primary-button { width:fit-content;min-width:155px; }
+.logout-status-card { display:grid;grid-template-columns:52px 1fr;align-items:center;gap:14px; }
+.logout-status-card .logout-check { display:grid;width:52px;height:52px;place-items:center;border-radius:15px;color:#fff;background:linear-gradient(135deg,#24954f,#51c477);box-shadow:0 10px 24px rgba(21,105,52,.22);font-size:1.4rem;font-weight:900; }
+.logout-status-card strong,.logout-status-card small { display:block; }
+.logout-status-card strong { margin-bottom:5px;color:#173b27;font-size:1.05rem; }
+.logout-status-card small { color:#6e7e74;line-height:1.5; }
+.logout-home-link { position:relative;z-index:1;width:fit-content;color:#fff;font-size:.9rem;font-weight:800;text-decoration:none; }
+.logout-home-link span { display:inline-block;margin-left:6px;transition:transform .2s ease; }
+.logout-home-link:hover span { transform:translateX(5px); }
+@media (max-width:850px) {
+    body.auth-logout .auth-showcase { display:none; }
+    body.auth-logout .logout-panel { text-align:center; }
+    body.auth-logout .auth-brand,body.auth-logout .logout-panel>.primary-button { margin-inline:auto; }
+    body.auth-logout .auth-copy>p:last-child { margin-inline:auto; }
+}
+

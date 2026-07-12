@@ -12,10 +12,10 @@ logout_user();
     <title>PeraHP - Logged Out</title>
     <link rel="stylesheet" href="styles.css?v=20260712-bg">
 </head>
-<body class="auth-page" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.34)), url('moneybackground.jpg') center / cover no-repeat fixed !important;">
+<body class="auth-page auth-logout">
     <main class="auth-shell logout-shell">
         <section class="login-panel logout-panel">
-            <a class="brand auth-brand" href="login.php">
+            <a class="brand auth-brand" href="index.php">
                 <img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo">
                 <div>
                     <strong>PeraHP</strong>
@@ -29,6 +29,19 @@ logout_user();
             </div>
             <a class="primary-button" href="login.php">Back to login</a>
         </section>
+        <section class="auth-showcase logout-showcase" aria-label="Signed out securely">
+            <p class="eyebrow">Session Complete</p>
+            <h2>Your wallet is secure until you return.</h2>
+            <div class="auth-preview-card logout-status-card">
+                <span class="logout-check" aria-hidden="true">✓</span>
+                <div>
+                    <strong>Signed out safely</strong>
+                    <small>Your PeraHP session has ended and your account remains protected.</small>
+                </div>
+            </div>
+            <a class="logout-home-link" href="index.php">Explore PeraHP promos <span>→</span></a>
+        </section>
     </main>
+    <script src="script.js"></script>
 </body>
 </html>
