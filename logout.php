@@ -27,7 +27,7 @@ logout_user();
                 <h1>You are logged out.</h1>
                 <p><?php echo e($user["name"]); ?>, your session has ended. Log in again when you are ready to continue.</p>
             </div>
-            <a class="primary-button" href="login.php">Back to login</a>
+            <a class="primary-button" href="index.php">Back to home page</a>
         </section>
         <section class="auth-showcase logout-showcase" aria-label="Signed out securely">
             <p class="eyebrow">Session Complete</p>
