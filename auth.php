@@ -145,6 +145,10 @@ function is_admin_user($user = null) {
     return isset($user["role"]) && $user["role"] === "Administrator";
 }
 
+function is_admin($user = null) {
+    return is_admin_user($user);
+}
+
 function is_logged_in() {
     return isset($_SESSION["perahp_user"]) && is_array($_SESSION["perahp_user"]);
 }

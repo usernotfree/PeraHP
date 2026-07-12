@@ -40,6 +40,9 @@ $stats = $adminData["stats"];
             <a class="nav-link" href="reports.php">Reports</a>
             <a class="nav-link" href="settings.php">Settings</a>
             <a class="nav-link active" href="admin.php">Admin</a>
+            <a class="nav-link" href="admin_deposits.php">Admin Deposits</a>
+            <a class="nav-link" href="admin_users.php">Admin Users</a>
+            <a class="nav-link" href="admin_audit.php">Audit Logs</a>
         </nav>
         <div class="auth-box">
             <a class="profile-link" href="profile.php" aria-label="Open profile">

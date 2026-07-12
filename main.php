@@ -143,11 +143,11 @@ $walletCount = count($walletPageData["wallets"]);
                 </div>
                 <span class="badge warning">Role gated</span>
             </div>
-            
+
             <div class="admin-list" style="margin-bottom: 25px; border-bottom: 1px solid var(--line); padding-bottom: 20px;">
-                <div class="admin-user-row"><strong>Maria Santos</strong><span class="badge success">Active</span><button class="mini-button">Suspend</button><button class="mini-button">Reset</button></div>
-                <div class="admin-user-row"><strong>Juan Dela Cruz</strong><span class="badge success">Active</span><button class="mini-button">Suspend</button><button class="mini-button">Reset</button></div>
-                <div><strong>Login audit</strong><small>Maria signed in from 127.0.0.1 at 8:45 PM</small></div>
+                <div><strong>Deposit approvals</strong><small>Review pending cash-in requests before balances change.</small><a class="mini-button" href="admin_deposits.php">Open deposits</a></div>
+                <div><strong>User management</strong><small>Suspend, reactivate, promote, or demote registered accounts.</small><a class="mini-button" href="admin_users.php">Open users</a></div>
+                <div><strong>Audit logs</strong><small>Review system activity and admin actions.</small><a class="mini-button" href="admin_audit.php">Open audit</a></div>
             </div>
 
             <section class="security-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
@@ -157,6 +157,8 @@ $walletCount = count($walletPageData["wallets"]);
             </section>
             <div style="margin-top:18px;">
                 <a class="primary-button" href="admin.php">Open admin dashboard</a>
+                <a class="secondary-button" href="admin_users.php">Manage users</a>
+                <a class="secondary-button" href="admin_audit.php">View audit logs</a>
             </div>
         </article>
         <?php endif; ?>
