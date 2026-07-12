@@ -1298,6 +1298,7 @@ body.dark-mode .security-card { background: #252538; border-color: var(--line); 
     .reveal-ready { opacity: 1; transform: none; }
 }
 
+/* Collapsible navigation and session notice */
 .sidebar-collapse {
     position: absolute;
     top: 84px;
@@ -1372,6 +1373,7 @@ body.dark-mode .login-notice { background: rgba(37,37,56,.96); }
     .login-notice { top: 16px; right: 16px; }
 }
 
+/* Public promotions home ------------------------------------------------- */
 .home-page { --home-navy: #20203e; overflow-x: hidden; background: #fbfaf8; }
 .home-header { position: sticky; top: 0; z-index: 50; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 30px; padding: 15px clamp(20px,5vw,76px); border-bottom: 1px solid rgba(34,34,63,.08); background: rgba(251,250,248,.88); backdrop-filter: blur(18px); }
 .home-brand { display: inline-flex; width: fit-content; align-items: center; gap: 13px; color: var(--home-navy); text-decoration: none; }
@@ -1413,11 +1415,13 @@ body.dark-mode .login-notice { background: rgba(37,37,56,.96); }
 .home-final { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; margin: 100px 0; padding: 45px; border-radius: 32px; color: #fff; background: var(--home-navy); }.home-final img { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; transition: transform .35s ease; }.home-final:hover img { transform: rotate(8deg) scale(1.08); }.home-final h2 { max-width: 750px; color: #fff; font-size: clamp(2rem,3.6vw,3.8rem); }.home-final .home-kicker { color: #9de4d3; }
 .home-footer { display: flex; align-items: center; justify-content: space-between; gap: 30px; padding: 30px clamp(20px,5vw,76px); border-top: 1px solid #e5e3df; color: #82818d; font-size: .82rem; }.footer-brand img { width: 55px; height: 55px; }
 
+/* Make the application logo more prominent and playful too. */
 .sidebar .brand-mark,.auth-brand .brand-mark { width: 62px; height: 62px; flex-basis: 62px; transition: transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease; }.sidebar .brand:hover .brand-mark,.auth-brand:hover .brand-mark { transform: rotate(-7deg) scale(1.1); box-shadow: 0 12px 27px rgba(0,0,0,.24); }.sidebar .brand:active .brand-mark,.auth-brand:active .brand-mark { transform: rotate(4deg) scale(.96); }
 
 @media (max-width: 980px) { .home-header { grid-template-columns: 1fr auto; }.home-nav { display:none; }.home-hero { grid-template-columns:1fr; }.hero-offer-card { min-height:440px; transform:none; }.promo-grid { grid-template-columns:1fr 1fr; }.promo-card:last-child { grid-column:span 2; }.perks-section { grid-template-columns:1fr; }.home-final { grid-template-columns:auto 1fr; }.home-final .home-cta { grid-column:1/-1; } }
 @media (max-width: 650px) { .home-header { padding:10px 16px; }.home-brand img { width:55px;height:55px; }.home-brand small,.home-user,.home-login.secondary { display:none; }.home-login { padding:10px 14px; }.home-page main { padding:0 16px; }.home-hero { min-height:auto;padding:55px 0; }.home-hero h1 { font-size:clamp(3rem,15vw,5rem); }.hero-offer-card { min-height:430px;border-radius:28px; }.home-trust { grid-template-columns:1fr 1fr;gap:18px; }.promo-section { padding:75px 0; }.home-section-heading { display:block; }.promo-grid { grid-template-columns:1fr; }.promo-card:last-child { grid-column:auto; }.perks-section { padding:55px 24px;border-radius:28px; }.home-final { grid-template-columns:1fr;padding:30px;margin:70px 0; }.home-final img { width:82px;height:82px; }.home-footer { align-items:flex-start;flex-direction:column; } }
 
+/* Top application navigation -------------------------------------------- */
 body.main-page { padding-top: 96px; }
 body.main-page .sidebar {
     inset: 0 0 auto 0;
@@ -1505,6 +1509,7 @@ body.main-page .sidebar-collapse:hover { background:rgba(255,255,255,.18); }
     body.main-page .sidebar.open .auth-box { top:calc(100% + 392px); }
 }
 
+/* Centered authentication experience ------------------------------------ */
 body.auth-page {
     display:grid;
     min-height:100svh;
@@ -1577,6 +1582,118 @@ body.auth-page .auth-preview-card:hover { transform:translateY(-4px) rotate(-1de
     body.auth-page .auth-showcase { display:none; }
     body.auth-page .login-panel { padding:clamp(28px,7vw,52px); }
 }
+
+/* Mobile-first usability pass ------------------------------------------- */
+.app-menu-button { display:none; }
+@media (max-width:760px) {
+    html { font-size:16px;-webkit-text-size-adjust:100%; }
+    body.main-page { padding-top:78px; }
+    body.main-page .sidebar {
+        min-height:78px;
+        grid-template-columns:minmax(0,1fr) 46px;
+        gap:12px;
+        padding:8px 14px;
+    }
+    body.main-page .sidebar .brand { min-width:0; }
+    body.main-page .sidebar .brand-mark { width:54px;height:54px;flex-basis:54px; }
+    body.main-page .sidebar .brand strong { font-size:1.05rem; }
+    body.main-page .sidebar .brand small { font-size:.7rem; }
+    body.main-page .app-menu-button { display:block;grid-column:2;grid-row:1;width:44px;height:44px;padding:0;border-color:rgba(255,255,255,.2);color:#fff;background:rgba(255,255,255,.1); }
+    body.main-page .app-menu-button span { background:#fff;transition:transform .2s ease,opacity .2s ease; }
+    body.main-page .sidebar.open .app-menu-button span:nth-child(1) { transform:translateY(6px) rotate(45deg); }
+    body.main-page .sidebar.open .app-menu-button span:nth-child(2) { opacity:0; }
+    body.main-page .sidebar.open .app-menu-button span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
+    body.main-page .sidebar.open { grid-template-rows:auto auto auto;max-height:calc(100svh - 10px);overflow-y:auto;padding-bottom:14px;border-radius:0 0 20px 20px; }
+    body.main-page .sidebar.open .nav-list {
+        position:static;
+        display:grid;
+        grid-column:1/-1;
+        grid-row:2;
+        grid-template-columns:1fr;
+        width:100%;
+        padding:10px 0 4px;
+        border:0;
+        border-top:1px solid rgba(255,255,255,.12);
+        border-radius:0;
+        box-shadow:none;
+        background:transparent;
+    }
+    body.main-page .sidebar.open .nav-link { min-height:46px;padding:13px 15px;border-radius:11px; }
+    body.main-page .sidebar.open .auth-box {
+        position:static;
+        display:flex;
+        grid-column:1/-1;
+        grid-row:3;
+        width:100%;
+        margin-top:5px;
+        padding:11px 12px;
+        border-radius:13px;
+        box-shadow:none;
+        background:rgba(0,0,0,.12);
+    }
+    body.main-page .page { width:100%;padding:20px 14px 42px; }
+    body.main-page .topbar { display:flex;align-items:flex-start;flex-direction:row;gap:10px;margin-bottom:18px; }
+    body.main-page .topbar>div:first-child { min-width:0;flex:1; }
+    body.main-page .topbar h1 { font-size:clamp(1.55rem,8vw,2rem);line-height:1.08; }
+    body.main-page .topbar .app-menu-button { display:none; }
+    body.main-page .top-actions { width:auto;flex:0 0 auto;flex-direction:row;gap:7px; }
+    body.main-page .top-actions .ghost-button:not(.theme-toggle) { display:none; }
+    .theme-toggle { width:44px;min-width:44px;height:44px; }
+    .overview-band { display:block;padding:8px;margin-bottom:14px;border-radius:20px; }
+    .overview-copy { min-height:240px;padding:26px 20px;border-radius:15px; }
+    .overview-copy h2 { font-size:clamp(2rem,10vw,2.8rem); }
+    .readiness-card { margin-top:8px;padding:18px; }
+    .metric-grid,.quick-actions,.grid,.module-grid,.security-grid,.wallet-grid,.rate-grid,.form-row,.form-row.two { grid-template-columns:1fr;gap:12px; }
+    .metric-card { min-height:112px;padding:18px; }
+    .metric-card strong { font-size:1.55rem;overflow-wrap:anywhere; }
+    .action-tile { min-height:64px;align-content:center;padding:17px 18px; }
+    .panel { padding:17px 14px;border-radius:17px; }
+    .panel-heading { gap:10px;margin-bottom:15px; }
+    .panel-heading h2 { font-size:1.08rem; }
+    .wallet-card,.activity-row,.rate-card,.security-card,.module-card { padding:14px; }
+    .activity-row { grid-template-columns:1fr; }
+    .activity-meta { min-width:0;width:100%;align-items:flex-start;text-align:left; }
+    .activity-meta .badge { align-self:flex-start; }
+    label { font-size:.74rem; }
+    input,select,.primary-button,.secondary-button,.ghost-button { min-height:48px; }
+    .form-stack>.primary-button { width:100%; }
+    .conversion-preview { padding:14px;border-radius:12px; }
+    .static-rates { margin-top:24px;padding:16px;border-radius:14px; }
+    .static-rate-grid { grid-template-columns:1fr;gap:10px; }
+    .table-wrap { width:calc(100% + 2px);margin-inline:-1px;border:1px solid var(--line);border-radius:12px;overscroll-behavior-inline:contain; }
+    table { min-width:680px;font-size:.87rem; }
+    th,td { padding:11px 10px;white-space:nowrap; }
+    .filters { display:grid;grid-template-columns:1fr;gap:9px; }
+    .bar-row { grid-template-columns:1fr;gap:7px;padding-block:7px; }
+    .settings-list>div { align-items:flex-start;flex-direction:column; }
+    .admin-list>.admin-user-row { grid-template-columns:1fr;justify-items:start; }
+    .admin-user-row .badge,.admin-user-row .mini-button { justify-self:start; }
+    .login-notice { top:12px;right:12px;width:calc(100vw - 24px);grid-template-columns:40px minmax(0,1fr) 24px;padding:12px; }
+    .login-notice-icon { width:40px;height:40px; }
+    .toast { right:12px;bottom:12px;left:12px;text-align:center; }
+    body.auth-page { min-height:100svh;padding:10px; }
+    body.auth-page .auth-shell { width:100%;border-radius:21px; }
+    body.auth-page .login-panel { padding:24px 18px; }
+    body.auth-page .auth-copy h1 { font-size:clamp(2rem,10vw,2.55rem); }
+    body.auth-page .auth-links { align-items:flex-start;flex-direction:column; }
+    .home-header { grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:9px 12px; }
+    .home-brand { min-width:0;gap:9px; }.home-brand img { width:52px;height:52px; }.home-brand strong { font-size:1.15rem; }
+    .home-account { gap:5px; }.home-login { padding:10px 13px; }
+    .home-page main { padding-inline:14px; }
+    .home-hero { gap:32px;padding:45px 0; }.home-hero h1 { font-size:clamp(2.8rem,15vw,4.7rem); }
+    .hero-offer-card { min-height:390px;padding:26px 22px; }.offer-orb { width:130px;height:130px;margin:36px 0 24px;font-size:3.6rem; }
+    .home-trust { grid-template-columns:1fr 1fr;padding:20px 0; }.home-trust span { line-height:1.5; }
+    .promo-card { min-height:360px;padding:24px; }.promo-icon { margin:38px 0 25px; }
+    .perks-section { gap:35px;padding:45px 20px; }.home-final { padding:26px 22px; }
+}
+@media (max-width:380px) {
+    body.main-page .sidebar .brand small { display:none; }
+    body.main-page .page { padding-inline:10px; }
+    .panel { padding-inline:12px; }
+    .home-brand small { display:none; }
+    .home-login { font-size:.78rem;padding-inline:11px; }
+    .home-trust { grid-template-columns:1fr; }
+}
 @media (max-width:560px) {
     body.auth-page { align-items:start;padding:12px; }
     body.auth-page .auth-shell { margin:auto 0;border-radius:23px; }
@@ -1586,6 +1703,7 @@ body.auth-page .auth-preview-card:hover { transform:translateY(-4px) rotate(-1de
     body.auth-page .auth-copy h1 { font-size:2.2rem; }
 }
 
+/* PeraHP logo-green brand system ---------------------------------------- */
 :root {
     --teal:#299f58;
     --teal-dark:#123d29;
@@ -1639,6 +1757,7 @@ body.dark-mode .readiness-card,body.dark-mode .wallet-card,body.dark-mode .activ
 body.dark-mode .ghost-button,body.dark-mode .mini-button,body.dark-mode .icon-button,body.dark-mode input,body.dark-mode select { background:#1c3225; }
 body.dark-mode .conversion-preview { background:#203828; }
 
+/* Public home: white canvas with green promotional features. */
 .home-page { --home-navy:#173a27;background:#fff; }
 .home-header { border-color:#e4eee7;background:rgba(255,255,255,.9); }
 .home-nav a:hover { color:#249950; }
@@ -1655,6 +1774,7 @@ body.dark-mode .conversion-preview { background:#203828; }
 .home-final { background:linear-gradient(115deg,#153d29,#237a46); }.home-final .home-kicker { color:#c9ffb8; }
 .home-footer { border-color:#e1ede5; }
 
+/* Authentication: green focus, mostly white form surface. */
 body.auth-page { background:radial-gradient(circle at 15% 15%,rgba(83,213,120,.23),transparent 28rem),radial-gradient(circle at 88% 82%,rgba(239,201,21,.12),transparent 25rem),linear-gradient(145deg,#0d281b,#174d31 62%,#246c40) !important; }
 body.auth-page .auth-shell { border-color:rgba(255,255,255,.18);box-shadow:0 38px 110px rgba(4,32,17,.36); }
 body.auth-page .auth-copy .eyebrow,body.auth-page .demo-credentials span { color:#258f4d; }
@@ -1666,11 +1786,13 @@ body.auth-page .auth-showcase { background:radial-gradient(circle at 90% 10%,rgb
 body.auth-page .auth-showcase .eyebrow { color:#e6ffbd; }
 .password-toggle { color:#217f45;background:#e9f7ee; }.password-toggle:hover { background:#d9f1e1; }
 
+/* Small green interaction details. */
 .panel,.metric-card,.action-tile,.promo-card,.wallet-card { transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease; }
 .panel:hover { border-color:rgba(41,159,88,.22); }
 .metric-card:not(.main-metric):hover { transform:translateY(-3px);border-color:rgba(41,159,88,.26);box-shadow:0 20px 45px rgba(24,100,53,.1); }
 .home-brand img,.brand-mark { border-color:rgba(80,190,105,.4); }
 
+/* Exchange reference rates */
 .static-rates { margin-top:40px;padding:25px;border:1px solid var(--line);border-radius:16px;background:#fff; }
 .static-rates h3 { margin:0 0 20px;color:var(--ink);font-size:1.1rem; }
 .static-rate-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px; }
@@ -1681,6 +1803,7 @@ body.dark-mode .static-rates h3 { color:#f0faf3; }
 body.dark-mode .static-rate-card { border-color:#355b42;color:#eaf8ee;background:#203b2a; }
 body.dark-mode .static-rate-card:hover { border-color:#4b9c67;background:#274833; }
 
+/* Logout confirmation */
 body.auth-logout .logout-panel { text-align:left; }
 body.auth-logout .logout-panel>.primary-button { width:fit-content;min-width:155px; }
 .logout-status-card { display:grid;grid-template-columns:52px 1fr;align-items:center;gap:14px; }
@@ -1697,4 +1820,3 @@ body.auth-logout .logout-panel>.primary-button { width:fit-content;min-width:155
     body.auth-logout .auth-brand,body.auth-logout .logout-panel>.primary-button { margin-inline:auto; }
     body.auth-logout .auth-copy>p:last-child { margin-inline:auto; }
 }
-

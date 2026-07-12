@@ -64,9 +64,21 @@ function showToast(message) {
 function initializeInterface() {
     const body = document.body;
     const sidebar = byId("sidebar");
-    const menu = byId("menuButton");
+    let menu = byId("menuButton");
 
     if (sidebar) body.classList.add("main-page");
+
+    if (sidebar) {
+        if (!menu) {
+            menu = document.createElement("button");
+            menu.type = "button";
+            menu.id = "menuButton";
+            menu.className = "icon-button app-menu-button";
+            menu.innerHTML = "<span></span><span></span><span></span>";
+        }
+        menu.classList.add("app-menu-button");
+        sidebar.appendChild(menu);
+    }
 
     if (sidebar && menu) {
         const backdrop = document.createElement("div");
@@ -407,4 +419,3 @@ function initializeDashboard() {
 }
 
 document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", initializeDashboard) : initializeDashboard();
-
