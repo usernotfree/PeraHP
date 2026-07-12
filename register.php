@@ -123,10 +123,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>PeraHP - Register</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="auth-page">
+<body class="auth-page auth-register">
     <main class="auth-shell">
         <section class="login-panel">
-            <a class="brand auth-brand" href="login.php">
+            <a class="brand auth-brand" href="index.php">
                 <img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo">
                 <div>
                     <strong>PeraHP</strong>
@@ -191,5 +191,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
         </section>
     </main>
+    <script src="script.js"></script>
 </body>
 </html>

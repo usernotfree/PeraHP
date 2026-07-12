@@ -181,6 +181,47 @@ function initializeInterface() {
     }
 }
 
+function initializeAuthExperience() {
+    if (!document.body.classList.contains("auth-page")) return;
+
+    document.querySelectorAll('input[type="password"]').forEach(input => {
+        const wrapper = document.createElement("span");
+        wrapper.className = "password-field";
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "password-toggle";
+        toggle.textContent = "Show";
+        toggle.setAttribute("aria-label", "Show password");
+        toggle.addEventListener("click", () => {
+            const reveal = input.type === "password";
+            input.type = reveal ? "text" : "password";
+            toggle.textContent = reveal ? "Hide" : "Show";
+            toggle.setAttribute("aria-label", reveal ? "Hide password" : "Show password");
+        });
+        wrapper.appendChild(toggle);
+    });
+
+    const newPassword = document.querySelector('input[name="password"][autocomplete="new-password"]');
+    if (newPassword) {
+        const meter = document.createElement("div");
+        meter.className = "password-strength";
+        meter.innerHTML = '<span></span><small>Use at least 8 characters</small>';
+        newPassword.closest("label").appendChild(meter);
+        newPassword.addEventListener("input", () => {
+            const value = newPassword.value;
+            let score = 0;
+            if (value.length >= 8) score++;
+            if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+            if (/\d/.test(value) || /[^A-Za-z0-9]/.test(value)) score++;
+            meter.dataset.score = String(score);
+            meter.querySelector("small").textContent = score < 2 ? "Add length, numbers, or mixed case" : score === 2 ? "Good password" : "Strong password";
+        });
+    }
+}
+
 function populateCurrencyOptions() {
     const walletSelectIds = ["sendFrom", "exchangeFrom"];
     const currencySelectIds = ["sendTo", "requestCurrency", "exchangeTo", "cashInCurrency"];
@@ -357,6 +398,7 @@ function bindEvents() {
 
 function initializeDashboard() {
     initializeInterface();
+    initializeAuthExperience();
     populateCurrencyOptions();
     renderAll();
     updateSendPreview();

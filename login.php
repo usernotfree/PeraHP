@@ -33,10 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <title>PeraHP - Login</title>
     <link rel="stylesheet" href="styles.css?v=20260712-bg">
 </head>
-<body class="auth-page" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.34)), url('moneybackground.jpg') center / cover no-repeat fixed !important;">
+<body class="auth-page auth-login">
     <main class="auth-shell">
         <section class="login-panel">
-            <a class="brand auth-brand" href="login.php">
+            <a class="brand auth-brand" href="index.php">
                 <img class="brand-mark" src="logo.png" width="46" height="46" alt="PeraHP logo">
                 <div>
                     <strong>PeraHP</strong>
@@ -93,5 +93,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
         </section>
     </main>
+    <script src="script.js"></script>
 </body>
 </html>
