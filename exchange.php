@@ -76,12 +76,12 @@ $walletPageData = perahp_wallet_page_data($user);
                 <button class="primary-button" type="submit">Exchange funds</button>
             </form>
 
-            <div class="static-rates" style="margin-top: 40px; padding: 25px; border: 1px solid var(--line); border-radius: 8px; background: #fff;">
-                <h3 style="font-size: 1.1rem; margin-bottom: 20px; color: var(--text);">Reference Exchange Rates</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div class="static-rates">
+                <h3>Reference Exchange Rates</h3>
+                <div class="static-rate-grid">
                     <?php foreach ($walletPageData["ratesToPhp"] as $code => $rate): ?>
                         <?php if ($code !== "PHP"): ?>
-                            <div style="padding: 15px; background: #f3f4f6; border-radius: 8px; font-size: 1rem;"><strong>1 <?php echo e($code); ?> = PHP <?php echo e(number_format((float) $rate, 2)); ?></strong></div>
+                            <div class="static-rate-card"><strong>1 <?php echo e($code); ?> = PHP <?php echo e(number_format((float) $rate, 2)); ?></strong></div>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </div>
