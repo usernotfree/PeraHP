@@ -47,7 +47,7 @@ $user = $loggedIn ? current_user() : null;
             </div>
             <div class="hero-offer-card" aria-label="Featured promotion">
                 <span class="offer-pill">Featured offer</span>
-                <div class="offer-orb">15<span>%</span></div>
+                <div class="offer-orb">15%</div>
                 <h2>Make every payment count.</h2>
                 <p>Earn up to 15% bonus rewards when you use your PeraHP wallet this month.</p>
                 <small>Terms and conditions apply.</small>
