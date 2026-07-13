@@ -200,7 +200,8 @@ VALUES
     ('USD', 58.500000, 'seed'),
     ('EUR', 63.200000, 'seed'),
     ('JPY', 0.390000, 'seed'),
-    ('SGD', 43.400000, 'seed')
+    ('SGD', 43.400000, 'seed'),
+    ('KRW', 0.040200, 'seed')
 ON DUPLICATE KEY UPDATE
     php_rate = VALUES(php_rate),
     source = VALUES(source);
@@ -215,6 +216,7 @@ ON DUPLICATE KEY UPDATE
     role = VALUES(role),
     status = VALUES(status);
 
+-- Give the seeded administrator the same related records created for new users.
 INSERT INTO wallets (user_id, currency_code, balance, status)
 SELECT id, 'PHP', 0.00, 'active'
 FROM users

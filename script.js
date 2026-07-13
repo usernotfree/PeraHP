@@ -5,7 +5,8 @@ const ratesToPhp = perahpPageData.ratesToPhp || {
     USD: 58.5,
     EUR: 63.2,
     JPY: 0.39,
-    SGD: 43.4
+    SGD: 43.4,
+    KRW: 0.0402
 };
 
 let wallets = perahpPageData.wallets || [
@@ -13,7 +14,8 @@ let wallets = perahpPageData.wallets || [
     { code: "USD", name: "US Dollar", balance: 850, accent: "success" },
     { code: "EUR", name: "Euro", balance: 320, accent: "warning" },
     { code: "JPY", name: "Japanese Yen", balance: 45000, accent: "neutral" },
-    { code: "SGD", name: "Singapore Dollar", balance: 440, accent: "success" }
+    { code: "SGD", name: "Singapore Dollar", balance: 440, accent: "success" },
+    { code: "KRW", name: "South Korean Won", balance: 250000, accent: "success" }
 ];
 
 let currencies = perahpPageData.currencies || Object.keys(ratesToPhp).map(code => {

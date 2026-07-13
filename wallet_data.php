@@ -8,7 +8,8 @@ function perahp_currency_meta($code) {
         "USD" => ["name" => "US Dollar", "accent" => "success"],
         "EUR" => ["name" => "Euro", "accent" => "warning"],
         "JPY" => ["name" => "Japanese Yen", "accent" => "neutral"],
-        "SGD" => ["name" => "Singapore Dollar", "accent" => "success"]
+        "SGD" => ["name" => "Singapore Dollar", "accent" => "success"],
+        "KRW" => ["name" => "South Korean Won", "accent" => "success"]
     ];
 
     return $meta[$code] ?? ["name" => $code, "accent" => "neutral"];
@@ -25,7 +26,8 @@ function perahp_default_rates() {
         "USD" => 58.5,
         "EUR" => 63.2,
         "JPY" => 0.39,
-        "SGD" => 43.4
+        "SGD" => 43.4,
+        "KRW" => 0.0402
     ];
 }
 
@@ -35,7 +37,8 @@ function perahp_default_wallets() {
         ["code" => "USD", "name" => "US Dollar", "balance" => 850, "accent" => "success"],
         ["code" => "EUR", "name" => "Euro", "balance" => 320, "accent" => "warning"],
         ["code" => "JPY", "name" => "Japanese Yen", "balance" => 45000, "accent" => "neutral"],
-        ["code" => "SGD", "name" => "Singapore Dollar", "balance" => 440, "accent" => "success"]
+        ["code" => "SGD", "name" => "Singapore Dollar", "balance" => 440, "accent" => "success"],
+        ["code" => "KRW", "name" => "South Korean Won", "balance" => 250000, "accent" => "success"]
     ];
 }
 
@@ -60,7 +63,7 @@ function perahp_available_currencies($rates = null) {
     }
 
     usort($currencies, function($a, $b) {
-        $order = ["PHP" => 0, "USD" => 1, "EUR" => 2, "JPY" => 3, "SGD" => 4];
+        $order = ["PHP" => 0, "USD" => 1, "EUR" => 2, "JPY" => 3, "SGD" => 4, "KRW" => 5];
         return ($order[$a["code"]] ?? 99) <=> ($order[$b["code"]] ?? 99);
     });
 
@@ -108,7 +111,7 @@ function perahp_user_wallets($userId) {
             "SELECT currency_code, balance, status
              FROM wallets
              WHERE user_id = :user_id AND status = 'active'
-             ORDER BY FIELD(currency_code, 'PHP', 'USD', 'EUR', 'JPY', 'SGD'), currency_code"
+             ORDER BY FIELD(currency_code, 'PHP', 'USD', 'EUR', 'JPY', 'SGD', 'KRW'), currency_code"
         );
         $statement->execute(["user_id" => $userId]);
         $wallets = [];
