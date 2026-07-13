@@ -207,10 +207,24 @@ ON DUPLICATE KEY UPDATE
 
 INSERT INTO users (full_name, email, password_hash, phone, address, role, status)
 VALUES
-    ('PeraHP Administrator', 'admin@perahp.test', 'admin123', '+63 917 000 0000', 'PeraHP Operations Center', 'admin', 'active')
+    ('PeraHP Administrator', 'admin@perahp.test', '$2y$10$6KxMDJbPMcb8./PJaL7kj.EjZUAz7DVk1ZpF3XHnNo.muz0H95RIm', '+63 917 000 0000', 'PeraHP Operations Center', 'admin', 'active')
 ON DUPLICATE KEY UPDATE
     full_name = VALUES(full_name),
     phone = VALUES(phone),
     address = VALUES(address),
     role = VALUES(role),
     status = VALUES(status);
+
+INSERT INTO wallets (user_id, currency_code, balance, status)
+SELECT id, 'PHP', 0.00, 'active'
+FROM users
+WHERE email = 'admin@perahp.test'
+ON DUPLICATE KEY UPDATE
+    status = VALUES(status);
+
+INSERT INTO user_settings (user_id, default_currency)
+SELECT id, 'PHP'
+FROM users
+WHERE email = 'admin@perahp.test'
+ON DUPLICATE KEY UPDATE
+    default_currency = VALUES(default_currency);
