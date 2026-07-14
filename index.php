@@ -102,6 +102,27 @@ $user = $loggedIn ? current_user() : null;
     </main>
 
     <footer class="home-footer"><a class="home-brand footer-brand" href="index.php"><img src="logo.png" alt=""><span><strong>PeraHP</strong><small>Your everyday wallet</small></span></a><p>© <?php echo date('Y'); ?> PeraHP. Move money with confidence.</p></footer>
+    <button class="assistant-launcher" id="assistantLauncher" type="button" aria-label="Open PeraHP Assist" aria-expanded="false">
+        <span class="assistant-launcher-mark" aria-hidden="true"><img src="logo.png" alt=""></span>
+        <span class="assistant-launcher-copy"><small>Need help?</small><strong>Ask PeraHP</strong></span>
+        <i aria-hidden="true"></i>
+    </button>
+    <aside class="assistant-window" id="assistantWindow" aria-label="PeraHP Assist" aria-hidden="true">
+        <header><div><span class="assistant-avatar"><img src="logo.png" alt=""></span><div><small class="assistant-eyebrow">Your wallet guide</small><strong>PeraHP Assist <em>Beta</em></strong><small class="assistant-status"><i></i> Online</small></div></div><button type="button" id="assistantClose" aria-label="Close assistant">×</button></header>
+        <div class="assistant-messages" id="assistantMessages" aria-live="polite">
+            <div class="assistant-welcome"><span>Smart wallet support</span><strong>How can I help?</strong><small>Ask about your PeraHP experience anytime.</small></div>
+            <div class="assistant-message bot"><p>Hi! I’m PeraHP Assist. Ask me about wallets, transfers, exchange, security, or getting started.</p></div>
+        </div>
+        <div class="assistant-suggestions" id="assistantSuggestions"></div>
+        <form class="assistant-form" id="assistantForm">
+            <label class="sr-only" for="assistantInput">Ask PeraHP Assist</label>
+            <input id="assistantInput" type="text" maxlength="500" placeholder="Ask a question…" autocomplete="off" required>
+            <button type="submit" aria-label="Send message"><span>↑</span></button>
+        </form>
+        <small class="assistant-disclaimer">PeraHP Assist provides general product guidance.</small>
+    </aside>
+    <script>window.PERAHP_ASSISTANT_TOKEN = <?php echo json_encode(csrf_token()); ?>;</script>
     <script src="script.js"></script>
 </body>
 </html>
+

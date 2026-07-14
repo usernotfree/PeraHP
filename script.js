@@ -256,6 +256,84 @@ function initializeAuthExperience() {
     }
 }
 
+function initializeHomeAssistant() {
+    const launcher = byId("assistantLauncher");
+    const windowEl = byId("assistantWindow");
+    const closeButton = byId("assistantClose");
+    const form = byId("assistantForm");
+    const input = byId("assistantInput");
+    const messages = byId("assistantMessages");
+    const suggestions = byId("assistantSuggestions");
+    if (!launcher || !windowEl || !form || !input || !messages || !suggestions) return;
+
+    const openAssistant = () => {
+        windowEl.classList.add("show");
+        windowEl.setAttribute("aria-hidden", "false");
+        launcher.setAttribute("aria-expanded", "true");
+        window.setTimeout(() => input.focus(), 120);
+    };
+    const closeAssistant = () => {
+        windowEl.classList.remove("show");
+        windowEl.setAttribute("aria-hidden", "true");
+        launcher.setAttribute("aria-expanded", "false");
+        launcher.focus();
+    };
+    const addMessage = (text, sender) => {
+        const item = document.createElement("div");
+        item.className = "assistant-message " + sender;
+        const paragraph = document.createElement("p");
+        paragraph.textContent = text;
+        item.appendChild(paragraph);
+        messages.appendChild(item);
+        messages.scrollTop = messages.scrollHeight;
+        return item;
+    };
+    const renderSuggestions = items => {
+        suggestions.replaceChildren();
+        (items || []).slice(0, 3).forEach(text => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = text;
+            button.addEventListener("click", () => sendMessage(text));
+            suggestions.appendChild(button);
+        });
+    };
+    const sendMessage = async text => {
+        const message = String(text || "").trim();
+        if (!message) return;
+        addMessage(message, "user");
+        input.value = "";
+        suggestions.replaceChildren();
+        const typing = addMessage("PeraHP Assist is thinking…", "bot typing");
+        form.classList.add("sending");
+        input.disabled = true;
+        try {
+            const response = await fetch("assistant.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                body: JSON.stringify({ message, csrf_token: window.PERAHP_ASSISTANT_TOKEN || "" })
+            });
+            const data = await response.json();
+            typing.remove();
+            addMessage(data.answer || data.error || "I couldn’t answer that right now. Please try again.", "bot");
+            renderSuggestions(data.suggestions || []);
+        } catch (error) {
+            typing.remove();
+            addMessage("I can’t connect right now. Please check your connection and try again.", "bot");
+        } finally {
+            form.classList.remove("sending");
+            input.disabled = false;
+            input.focus();
+        }
+    };
+
+    launcher.addEventListener("click", () => windowEl.classList.contains("show") ? closeAssistant() : openAssistant());
+    closeButton?.addEventListener("click", closeAssistant);
+    form.addEventListener("submit", event => { event.preventDefault(); sendMessage(input.value); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape" && windowEl.classList.contains("show")) closeAssistant(); });
+    renderSuggestions(["How do I create an account?", "Which currencies are supported?", "How does exchange work?"]);
+}
+
 function populateCurrencyOptions() {
     const walletSelectIds = ["sendFrom", "exchangeFrom"];
     const currencySelectIds = ["sendTo", "requestCurrency", "exchangeTo", "cashInCurrency"];
@@ -433,6 +511,7 @@ function bindEvents() {
 function initializeDashboard() {
     initializeInterface();
     initializeAuthExperience();
+    initializeHomeAssistant();
     populateCurrencyOptions();
     renderAll();
     updateSendPreview();
